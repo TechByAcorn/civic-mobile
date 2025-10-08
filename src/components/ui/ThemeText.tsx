@@ -5,28 +5,32 @@ export type ThemeTextVariant =
   | 'h1'
   | 'h2'
   | 'h3'
+  | 'h4'
   | 'subtitle'
   | 'body'
   | 'caption'
-  | 'button';
+  | 'button'
+  | 'label';
 
 export type ThemeTextProps = TextProps & {
   variant?: ThemeTextVariant;
   weight?: 'regular' | 'medium' | 'semibold' | 'bold';
-  color?: 'primary' | 'onSurface' | 'muted';
+  color?: 'primary' | 'onSurface' | 'muted' | 'text-primary' | 'text-secondary' | 'text-white';
   align?: 'left' | 'center' | 'right';
   uppercase?: boolean;
   className?: string; // nativewind
 };
 
 const variantClasses: Record<ThemeTextVariant, string> = {
-  h1: 'font-heading text-4xl tracking-wide',
+  h1: 'font-heading text-[32px] leading-[1.25] tracking-[0.03em]',
   h2: 'font-heading text-3xl tracking-wide',
-  h3: 'font-heading text-2xl tracking-wide',
-  subtitle: 'font-inter text-lg',
-  body: 'font-sans text-base',
-  caption: 'font-sans text-sm',
-  button: 'font-inter text-base',
+  h3: 'font-heading text-[24px] tracking-wide',  
+  h4: 'font-heading text-[18px] leading-[1.25] tracking-[0.03em] uppercase',
+  subtitle: 'font-inter text-[20px]',
+  body: 'font-body text-[16px] leading-[1.5] tracking-normal',
+  caption: 'font-inter text-[12px]',
+  button: 'font-body text-[16px] leading-[1.5] tracking-normal',
+  label: 'font-body text-[14px] leading-[21px] tracking-normal',
 };
 
 const weightClasses: Record<NonNullable<ThemeTextProps['weight']>, string> = {
@@ -40,6 +44,9 @@ const colorClasses: Record<NonNullable<ThemeTextProps['color']>, string> = {
   primary: 'text-primary',
   onSurface: 'text-onSurface dark:text-onSurface-dark',
   muted: 'text-muted dark:text-muted-dark',
+  'text-primary': 'text-text-primary',
+  'text-secondary': 'text-text-secondary',
+  'text-white': 'text-white'
 };
 
 const alignClasses: Record<NonNullable<ThemeTextProps['align']>, string> = {

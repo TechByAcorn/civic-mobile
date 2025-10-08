@@ -13,27 +13,51 @@ module.exports = {
         clash: ['ClashGrotesk', 'System'],
         // Inter for UI and supporting information
         inter: ['Inter', 'System'],
+        // Dedicated alias for Body text style
+        body: ['Inter', 'System'],
         // Default stacks
         sans: ['Inter', 'System'],
         heading: ['ClashGrotesk', 'System'],
       },
-      // Example semantic colors (you can adjust based on Figma tokens)
+      fontSize: {
+        // Figma Body / Label size 14 with 150% leading
+        label: ['14px', { lineHeight: '21px' }],
+      },
       colors: {
         primary: {
-          DEFAULT: '#2E7D32',
+          DEFAULT: '#af0604',
         },
         surface: {
-          DEFAULT: '#FFFFFF',
-          dark: '#0B0F14',
+          DEFAULT: '#FBF7F3',
         },
-        onSurface: {
-          DEFAULT: '#0B0F14',
-          dark: '#E6EAF0',
+        accentBackground: {
+          DEFAULT: "#6ED5B8"
+        },
+        neutral: {
+          DEFAULT: "#EEEAE0"
+        },
+        disabled: {
+          DEFAULT: "#BFBFBF"
         },
         muted: {
-          DEFAULT: '#6B7280',
+          DEFAULT: '#D9D9D9',
           dark: '#9CA3AF',
         },
+        black: {
+          DEFAULT: "#1F1F1F",
+        },
+        "text-primary": {
+          DEFAULT: "#141414"
+        },
+        "text-secondary": {
+          DEFAULT: "#434343"
+        },
+        "text-white": {
+          DEFAULT: "#FFF"
+        },
+        border: {
+          DEFAULT: "#E6E6E7"
+        }
       },
     },
   },
