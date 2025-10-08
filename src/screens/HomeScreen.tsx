@@ -93,6 +93,7 @@ export default function HomeScreen() {
         className="flex-1"
         onScroll={(e) => setScrolled(e.nativeEvent.contentOffset.y > 24)}
         scrollEventThrottle={16}
+        testID="home-main-scroll"
       >
         <ImageBackground
           source={require("assets/images/illustration-three.png")}
@@ -121,7 +122,7 @@ export default function HomeScreen() {
               Hi, Jame
             </ThemeText>
             <View className="flex-row items-center gap-[24]">
-              <Pressable accessibilityRole="button">
+              <Pressable accessibilityRole="button" onPress={goToCourses} testID="home-search-button">
                 <SearchIcon />
               </Pressable>
               <Pressable accessibilityRole="button">
@@ -173,6 +174,7 @@ export default function HomeScreen() {
               <Pressable
                 accessibilityRole="button"
                 onPress={openCategoriesModal}
+                testID="home-browse-all-button"
               >
                 <ThemeText
                   variant="label"
