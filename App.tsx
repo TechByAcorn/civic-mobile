@@ -80,7 +80,7 @@ export default function App() {
     <AppProviders>
       <View className={theme === 'dark' ? 'dark flex-1' : 'flex-1'}>
         <NavigationContainer theme={theme === 'dark' ? DarkTheme : DefaultTheme}>
-          {!isAuthenticated ? (
+          {isAuthenticated ? (
             <RootNavigator />
           ) : (
             <AuthStack />

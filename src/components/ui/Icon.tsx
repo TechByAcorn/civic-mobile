@@ -204,3 +204,21 @@ export const BackIcon = (props: SvgProps) => (
     />
   </Svg>
 );
+
+export const CloseIcon = (props: SvgProps) => (
+  <Svg
+    width={32}
+    height={32}
+    viewBox="0 0 32 32"
+    fill="none"
+    {...props}
+  >
+    <Path
+      d="M22.6666 9.3335L9.33331 22.6668M9.33331 9.3335L22.6666 22.6668"
+      stroke="#141414"
+      strokeWidth={2}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </Svg>
+);

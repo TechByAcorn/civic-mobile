@@ -8,24 +8,27 @@ import { StatusBar } from 'expo-status-bar';
 const slides = [
   {
     title: 'Learn Today, Lead Tomorrow',
+    image: require("assets/images/onboarding-one.png"),
     body:
       'Access empowering courses designed to\n build skills, boost confidence, and unlock\n opportunities for your future success.',
   },
   {
     title: 'Explore Courses\n That Matter',
+    image: require("assets/images/onboarding-two.png"),
     body:
       'From financial literacy to leadership,\n discover a wide range of topics crafted to\n help you grow personally and professionally.',
   },
   {
     title: 'Connect & Achieve Together',
+    image: require("assets/images/onboarding-three.png"),
     body:
       'Join a supportive community, learn from\n experts, and earn certifications that\n showcase your commitment and achievements.',
   },
 ];
 
-const INACTIVE_WIDTH = 8;
-const ACTIVE_WIDTH = 16; // active indicator slightly longer
-const DOT_HEIGHT = 4;
+const INACTIVE_WIDTH = 6;
+const ACTIVE_WIDTH = 18; // active indicator slightly longer
+const DOT_HEIGHT = 6;
 const GAP = 8;
 const DEVICE_HEIGHT = Dimensions.get('window').height;
 
@@ -40,16 +43,14 @@ export default function OnboardingScreen() {
     setActiveIndex(index);
   };
 
-  const HERO_HEIGHT = Math.round(DEVICE_HEIGHT * 0.35);
-
   return (
     <View className="flex-1 bg-surface">
       <StatusBar style="light" />
 
       {/* Hero image (full-bleed) with centered logo */}
-      <View style={{ height: HERO_HEIGHT }}>
+      <View style={{ height: DEVICE_HEIGHT / 2.4 }}>
         <Image
-          source={require('../../../assets/images/illustration-one.png')}
+          source={slides[activeIndex]?.image ?? require('../../../assets/images/illustration-one.png')}
           style={{ width: '100%', height: '100%', resizeMode: 'cover' }}
         />
         <View className="absolute top-[60] left-0 right-0 items-center">
@@ -60,26 +61,26 @@ export default function OnboardingScreen() {
         </View>
       </View>
 
-      {/* Indicators on top of content */}
-      <View className="mt-6 px-5 items-center">
-        <View className="flex-row">
-          {slides.map((_, i) => (
-            <View
-              key={`dot-${i}`}
-              style={{
-                width: i === activeIndex ? ACTIVE_WIDTH : INACTIVE_WIDTH,
-                height: DOT_HEIGHT,
-                borderRadius: DOT_HEIGHT / 2,
-                marginLeft: i === 0 ? 0 : GAP,
-              }}
-              className={i === activeIndex ? 'bg-onSurface' : 'bg-muted'}
-            />
-          ))}
-        </View>
-      </View>
-
       {/* Slides */}
       <View className="flex-1">
+        {/* Indicators on top of content */}
+        <View className="mt-6 items-center justify-center h-[36]">
+          <View className="flex-row">
+            {slides.map((_, i) => (
+              <View
+                key={`dot-${i}`}
+                style={{
+                  width: i === activeIndex ? ACTIVE_WIDTH : INACTIVE_WIDTH,
+                  height: DOT_HEIGHT,
+                  borderRadius: DOT_HEIGHT / 2,
+                  marginLeft: i === 0 ? 0 : GAP,
+                }}
+                className={i === activeIndex ? 'bg-black' : 'bg-muted'}
+              />
+            ))}
+          </View>
+        </View>
+
         <ScrollView
           horizontal
           pagingEnabled
@@ -87,7 +88,7 @@ export default function OnboardingScreen() {
           onMomentumScrollEnd={handleScrollEnd}
         >
           {slides.map((slide, i) => (
-            <View key={`slide-${i}`} style={{ width }} className="items-center justify-center px-5 gap-[12]">
+            <View key={`slide-${i}`} style={{ width }} className="items-center justify-center px-5 gap-[12] mb-12">
               <ThemeText variant="h1" weight="bold" color="onSurface" align="center" uppercase className="mt-6">
                 {slide.title}
               </ThemeText>
@@ -100,7 +101,7 @@ export default function OnboardingScreen() {
       </View>
 
       {/* CTA */}
-      <View className="px-5 pb-[80] gap-[24]">
+      <View className="px-[20] pb-[80] gap-[24]">
         <Pressable
           onPress={() => navigation.navigate('Login' as never)}
           className="mt-2 w-full rounded-[8] bg-black px-4 h-[44] items-center justify-center"
@@ -112,10 +113,10 @@ export default function OnboardingScreen() {
         </Pressable>
 
         <ThemeText variant="caption" align="center">
-          By continuing, you verify that you are agreed to our
-          <ThemeText variant="caption" color="primary"> Terms of Use </ThemeText>
+          By continuing, you verify that you are agreed to our{"\n"}
+          <ThemeText variant="caption" color="primary" align="center" weight="bold"> Terms of Use </ThemeText>
           and
-          <ThemeText variant="caption" color="primary"> Privacy Policy</ThemeText>.
+          <ThemeText variant="caption" color="primary" align="center" weight="bold"> Privacy Policy</ThemeText>.
         </ThemeText>
       </View>
     </View>

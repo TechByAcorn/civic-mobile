@@ -6,12 +6,12 @@ import { BackIcon } from './Icon';
 
 export interface AppBarProps {
   title: string;
+  backComponent?: React.ReactElement;
   onBackPress?: () => void;
-  showBack?: boolean;
   className?: string; // allow NativeWind class overrides
 }
 
-const AppBar: React.FC<AppBarProps> = ({ title, onBackPress, showBack = true, className }) => {
+const AppBar: React.FC<AppBarProps> = ({ title, backComponent, onBackPress, className }) => {
   const navigation = useNavigation();
 
   const handleBack = useCallback(() => {
@@ -38,11 +38,15 @@ const AppBar: React.FC<AppBarProps> = ({ title, onBackPress, showBack = true, cl
       className={`flex-row items-center justify-between px-[20] bg-white border-b border-border ${className ?? ''}`}
     >
       <View className="w-[32]">
-        {showBack ? (
+        {backComponent ? (
+          <Pressable onPress={handleBack}>
+            {backComponent}
+          </Pressable>
+        ) : (
           <Pressable accessibilityRole="button" onPress={handleBack} hitSlop={8}>
             <BackIcon />
           </Pressable>
-        ) : null}
+        )}
       </View>
 
       {/* Center: Title */}
