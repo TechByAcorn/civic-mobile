@@ -44,7 +44,7 @@ export default function OnboardingScreen() {
   };
 
   return (
-    <View className="flex-1 bg-surface">
+    <View className="flex-1 bg-surface" testID='onboarding-screen'>
       <StatusBar style="light" />
 
       {/* Hero image (full-bleed) with centered logo */}
