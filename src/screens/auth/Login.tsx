@@ -110,6 +110,7 @@ export default function LoginScreen() {
               setValue("loginMethod", "email", { shouldValidate: true })
             }
             className={`flex-1 rounded-full h-full items-center justify-center ${loginMethod === "email" ? "bg-primary" : ""}`}
+            testID="login-toggle-email"
           >
             <ThemeText
               variant="body"
@@ -126,7 +127,8 @@ export default function LoginScreen() {
             onPress={() =>
               setValue("loginMethod", "phone", { shouldValidate: true })
             }
-            className={`flex-1 rounded-full h-full items-center justify-center ${loginMethod === "phone" ? "bg-primary" : "bg-neutral"}`}
+            className={`flex-1 h-full rounded-full items-center justify-center ${loginMethod === "phone" ? "bg-primary" : ""}`}
+            testID="login-toggle-phone"
           >
             <ThemeText
               variant="body"
@@ -164,6 +166,7 @@ export default function LoginScreen() {
                     placeholder="james@email.io"
                     keyboardType="email-address"
                     autoCapitalize="none"
+                    testID="login-email-input"
                     className={`h-[44] rounded-md border ${errorsAny.email ? "border-red-500" : "border-neutral-300 dark:border-neutral-700"} bg-white dark:bg-neutral-800 px-3 text-[16px] font-body`}
                   />
                 )}
@@ -180,6 +183,7 @@ export default function LoginScreen() {
                     placeholder="(555) 555-1234"
                     keyboardType="phone-pad"
                     autoCapitalize="none"
+                    testID="login-phone-input"
                     className={`h-[44] rounded-md border ${errorsAny.phone ? "border-red-500" : "border-neutral-300 dark:border-neutral-700"} bg-white dark:bg-neutral-800 px-3 text-[16px] font-body`}
                   />
                 )}
@@ -225,6 +229,7 @@ export default function LoginScreen() {
                     placeholder="••••••••"
                     secureTextEntry={!showPassword}
                     autoCapitalize="none"
+                    testID="login-password-input"
                     className={`h-11 rounded-lg border ${errors.password ? "border-red-500" : "border-neutral-300 dark:border-neutral-700"} bg-white dark:bg-neutral-800 px-3 pr-12 text-[16px] font-body`}
                   />
                 )}
@@ -277,6 +282,7 @@ export default function LoginScreen() {
             onPress={handleSubmit(onSubmit)}
             disabled={!isValid}
             className={`mt-3 h-[44] rounded-lg items-center justify-center ${isValid ? "bg-black" : "bg-disabled"}`}
+            testID="login-submit-button"
           >
             <ThemeText
               variant="button"

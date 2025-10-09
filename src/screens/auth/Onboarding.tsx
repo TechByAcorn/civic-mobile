@@ -106,6 +106,7 @@ export default function OnboardingScreen() {
           onPress={() => navigation.navigate('Login' as never)}
           className="mt-2 w-full rounded-[8] bg-black px-4 h-[44] items-center justify-center"
           accessibilityRole="button"
+          testID="onboarding-get-started-button"
         >
           <ThemeText variant="button" weight="medium" align="center" className="text-white">
             Get Started
