@@ -30,7 +30,7 @@ const CourseCard: React.FC<{ item: Course; onPress: (id: string) => void }> = ({
           />
           <View className='absolute top-[6] right-[6] flex-row items-center gap-[4] bg-white border border-border px-[4] py-[2] rounded-[4]'>
             <RatingIcon />
-            <ThemeText variant='caption' weight="medium">4.7</ThemeText>
+            <ThemeText variant='caption' weight="medium">{typeof item.rating === 'number' ? item.rating.toFixed(1) : '4.7'}</ThemeText>
           </View>
         </View>
       </View>
@@ -38,11 +38,11 @@ const CourseCard: React.FC<{ item: Course; onPress: (id: string) => void }> = ({
       <View className="flex-row items-center gap-[16] mt-[16]">
         <View className='flex-row items-center gap-[8]'>
           <DurationIcon />
-          <ThemeText variant='caption' color="text-secondary">45 - 60 Mins</ThemeText>
+          <ThemeText variant='caption' color="text-secondary">{item.duration}</ThemeText>
         </View>
         <View className='flex-row items-center gap-[8]'>
           <SlideShowIcon />
-          <ThemeText variant='caption' color="text-secondary">5 Modules</ThemeText>
+          <ThemeText variant='caption' color="text-secondary">{typeof item.modules === 'number' ? `${item.modules} Modules` : '5 Modules'}</ThemeText>
         </View>
       </View>
     </Pressable>
