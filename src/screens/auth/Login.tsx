@@ -12,7 +12,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import AppBar from "../../components/ui/AppBar";
 import ThemeInput from "../../components/ui/ThemeInput";
 import ThemeButton from "../../components/ui/ThemeButton";
-import { PasswordEyeIcon } from "@/components/ui/Icon";
+import { CheckboxIcon, PasswordEyeIcon, RememberMeFilledIcon, RememberMeIcon } from "@/components/ui/Icon";
 
 export default function LoginScreen() {
   const setAuthenticated = useAppStore((s) => s.setAuthenticated);
@@ -222,20 +222,20 @@ export default function LoginScreen() {
                 <Pressable
                   onPress={() => setRememberMe(!rememberMe)}
                   className="h-5 w-5 items-center justify-center rounded border"
-                  style={{
-                    borderColor: rememberMe
-                      ? "#EF4444"
-                      : "#D4D4D4",
-                    backgroundColor: rememberMe ? "#EF4444" : "transparent",
-                  }}
                 >
                   {rememberMe ? (
-                    <Ionicons name="checkmark" size={14} color="#FFFFFF" />
-                  ) : null}
+                    <RememberMeFilledIcon />
+                  ) : <RememberMeIcon />}
                 </Pressable>
-                <ThemeText variant="body" color="onSurface">
-                  Remember me
-                </ThemeText>
+                <Pressable
+                  accessibilityRole="button"
+                  onPress={() => setRememberMe(!rememberMe)}
+                  testID="toggle-rememberme-text"
+                >
+                  <ThemeText variant="body" color="onSurface">
+                    Remember me
+                  </ThemeText>
+                </Pressable>
               </View>
 
               <ThemeButton
