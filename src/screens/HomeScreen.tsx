@@ -28,22 +28,21 @@ interface Category {
 
 const demoCategories: readonly Category[] = [
   {
-    name: "Auto Finance",
-    icon: require("assets/images/icons/auto-finance.png"),
+    name: "Civic Systems",
+    icon: require("assets/images/icons/civic-system.png"),
   },
-  { name: "Budget", icon: require("assets/images/icons/budget.png") },
-  { name: "Childcare", icon: require("assets/images/icons/childcare.png") },
-  { name: "Credit", icon: require("assets/images/icons/credit.png") },
-  { name: "Savings", icon: require("assets/images/icons/budget.png") },
-  { name: "Loans", icon: require("assets/images/icons/credit.png") },
-  { name: "Insurance", icon: require("assets/images/icons/auto-finance.png") },
-  { name: "Investing", icon: require("assets/images/icons/budget.png") },
-  { name: "Taxes", icon: require("assets/images/icons/credit.png") },
-  { name: "Housing", icon: require("assets/images/icons/childcare.png") },
-  { name: "Employment", icon: require("assets/images/icons/auto-finance.png") },
+  { name: "Voice", icon: require("assets/images/icons/voice.png") },
+  { name: "Rights and Duties", icon: require("assets/images/icons/right.png") },
+  { name: "Community", icon: require("assets/images/icons/community.png") },
+  { name: "Government", icon: require("assets/images/icons/government.png") },
+  { name: "Global", icon: require("assets/images/icons/global.png") },
+  { name: "Action and Impact", icon: require("assets/images/icons/action.png") },
+  { name: "Law and Justice", icon: require("assets/images/icons/law.png") },
+  { name: "Money and Fairness", icon: require("assets/images/icons/money.png") },
+  { name: "Future and Response", icon: require("assets/images/icons/future.png") },
 ];
 
-const DEVICE_WIDTH = (Dimensions.get("window").width) - 82;
+const DEVICE_WIDTH = Dimensions.get("window").width - 82;
 
 export default function HomeScreen() {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
@@ -51,18 +50,12 @@ export default function HomeScreen() {
   const [scrolled, setScrolled] = useState(false);
   const [showCategoriesModal, setShowCategoriesModal] = useState(false);
 
-  const openCategoriesModal = useCallback(
-    () => setShowCategoriesModal(true),
-    [],
-  );
-  const closeCategoriesModal = useCallback(
-    () => setShowCategoriesModal(false),
-    [],
-  );
+  const openCategoriesModal = useCallback(() => setShowCategoriesModal(true), []);
+  const closeCategoriesModal = useCallback(() => setShowCategoriesModal(false), []);
 
   const goToCourses = useCallback(
     () => navigation.navigate("Tabs", { screen: "Courses" }),
-    [navigation],
+    [navigation]
   );
 
   const goToRecommended = useCallback(() => {
@@ -113,7 +106,7 @@ export default function HomeScreen() {
             }}
           />
           {/* Top Bar */}
-          <View className="flex-row items-center justify-between px-[20] pt-1 h-[60]">
+          <View className="flex-row items-center justify-between px-screen pt-1 h-[60]">
             <ThemeText
               variant="h2"
               color={scrolled ? "onSurface" : "text-white"}
@@ -121,7 +114,7 @@ export default function HomeScreen() {
             >
               Hi, Jame
             </ThemeText>
-            <View className="flex-row items-center gap-[24]">
+            <View className="flex-row items-center gap-6">
               <Pressable accessibilityRole="button" onPress={goToCourses} testID="home-search-button">
                 <SearchIcon />
               </Pressable>
@@ -132,7 +125,7 @@ export default function HomeScreen() {
           </View>
 
           <View
-            className="absolute bottom-[-50] mx-[20] bg-white rounded-[4]"
+            className="absolute bottom-[-50] mx-screen bg-white rounded"
             style={{
               shadowColor: "#000",
               shadowOffset: {
@@ -140,37 +133,43 @@ export default function HomeScreen() {
                 height: 4,
               },
               shadowOpacity: 0.032,
-              shadowRadius: 1.00,
+              shadowRadius: 1.0,
               elevation: 1,
             }}
           >
-            <View className="py-[12]">
+            <View className="py-3">
               <ScrollView
                 horizontal
                 showsHorizontalScrollIndicator={false}
                 testID="home-categories-scroll"
-                contentContainerClassName="px-[12] flex-row items-center justify-between gap-[16]"
+                contentContainerClassName="px-3 flex-row items-center justify-between gap-4"
               >
                 {demoCategories.map((category) => (
                   <Pressable
                     key={category.name}
-                    className="items-center justify-center gap-[4]"
+                    className="items-center justify-center gap-tiny"
                     style={{ width: DEVICE_WIDTH / 4.2 }}
                     accessibilityRole="button"
                     testID={`home-category-${category.name.toLowerCase()}`}
                   >
-                    <Image source={category?.icon} className="w-[52] h-[52]" />
-                    <ThemeText
-                      variant="caption"
-                      weight="medium"
-                      color="text-secondary"
-                    >
-                      {category?.name}
-                    </ThemeText>
+                    <View className="w-[52] h-[52]">
+                      <Image source={category?.icon} className="w-[52] h-[52]" />
+                    </View>
+                    <View className="flex-1">
+                      <ThemeText
+                        variant="caption"
+                        weight="medium"
+                        color="text-secondary"
+                        align="center"
+                        numberOfLines={2}
+                      >
+                        {category?.name}
+                      </ThemeText>
+                    </View>
                   </Pressable>
                 ))}
               </ScrollView>
-              <View className="my-[12] w-full h-[0.9] bg-border" />
+              <View className="my-3 w-full h-[0.9] bg-border" />
               <Pressable
                 accessibilityRole="button"
                 onPress={openCategoriesModal}
@@ -196,7 +195,7 @@ export default function HomeScreen() {
             moreAction={goToRecommended}
           />
 
-          <View className="mx-[20] mb-[32]">
+          <View className="mx-screen mb-8">
             <Image
               source={require("assets/images/certificate.png")}
               className="w-full h-[200]"
@@ -238,7 +237,7 @@ export default function HomeScreen() {
             testID="categories-modal-backdrop"
           />
           <View
-            className="bg-white rounded-t-[12] pt-[12] pb-[24]"
+            className="bg-white rounded-t-[12] pt-3 pb-6"
             testID="categories-modal-content"
           >
             <AppBar
@@ -246,7 +245,7 @@ export default function HomeScreen() {
               backComponent={<CloseIcon />}
               onBackPress={closeCategoriesModal}
             />
-            <View className="mt-[24] px-[20]">
+            <View className="mt-6 px-screen">
               <FlatList
                 data={demoCategories}
                 numColumns={2}
@@ -255,7 +254,7 @@ export default function HomeScreen() {
                 renderItem={({ item }) => (
                   <Pressable
                     accessibilityRole="button"
-                    className="flex-row items-center gap-[12] p-[12] w-[48%] border border-border"
+                    className="flex-row items-center gap-item p-3 w-[48%] border border-border"
                     onPress={closeCategoriesModal}
                     testID={`modal-category-${item.name.toLowerCase()}`}
                   >
@@ -270,7 +269,7 @@ export default function HomeScreen() {
                     </ThemeText>
                   </Pressable>
                 )}
-                ItemSeparatorComponent={() => <View className="h-[20]" />}
+                ItemSeparatorComponent={() => <View className="h-5" />}
                 contentContainerStyle={{ paddingBottom: 8 }}
               />
             </View>
