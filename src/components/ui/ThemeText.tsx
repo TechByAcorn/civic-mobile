@@ -15,7 +15,7 @@ export type ThemeTextVariant =
 export type ThemeTextProps = TextProps & {
   variant?: ThemeTextVariant;
   weight?: 'regular' | 'medium' | 'semibold' | 'bold';
-  color?: 'primary' | 'onSurface' | 'muted' | 'text-primary' | 'text-secondary' | 'text-white';
+  color?: 'primary' | 'onSurface' | 'muted' | 'text-primary' | 'text-secondary' | 'text-white' | 'text-disabledPrimary';
   align?: 'left' | 'center' | 'right';
   uppercase?: boolean;
   className?: string; // nativewind
@@ -46,7 +46,8 @@ const colorClasses: Record<NonNullable<ThemeTextProps['color']>, string> = {
   muted: 'text-muted dark:text-muted-dark',
   'text-primary': 'text-text-primary',
   'text-secondary': 'text-text-secondary',
-  'text-white': 'text-white'
+  'text-white': 'text-white',
+  'text-disabledPrimary': 'text-disabledPrimary',
 };
 
 const alignClasses: Record<NonNullable<ThemeTextProps['align']>, string> = {
