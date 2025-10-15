@@ -4,6 +4,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
 import AppBar from '@/components/ui/AppBar';
 import { ThemeText } from '@/components/ui/ThemeText';
+import { TrophyIcon } from '@/components/ui/Icon';
 
 // Types for My Courses data
 type CourseStatus = 'in_progress' | 'saved' | 'completed';
@@ -67,9 +68,9 @@ const SegmentedChip: React.FC<{ label: string; active?: boolean; onPress: () => 
   <Pressable
     accessibilityRole="button"
     onPress={onPress}
-    className={`px-[12] py-[6] rounded-full ${active ? 'bg-neutral' : 'bg-primary'}`}
+    className={`px-item py-label rounded-full ${active ? 'bg-brandPrimary' : 'bg-neutral'}`}
   >
-    <ThemeText variant="label" weight={active ? 'bold' : 'medium'} color={active ? 'primary' : 'onSurface'}>
+    <ThemeText variant="label" weight={'medium'} color={active ? 'text-white' : 'text-primary'}>
       {label}
     </ThemeText>
   </Pressable>
@@ -78,11 +79,16 @@ const SegmentedChip: React.FC<{ label: string; active?: boolean; onPress: () => 
 const ProgressBar: React.FC<{ value: number }> = ({ value }) => {
   const clamped = Math.max(0, Math.min(100, value));
   return (
-    <View className="w-full mt-[8]">
-      <ThemeText variant="caption" color="text-secondary">Overall Progress {clamped}%</ThemeText>
-      <View className="h-[6] w-full bg-[#EAEAEA] rounded-full mt-[6] overflow-hidden">
-        <View style={{ width: `${clamped}%` }} className="h-[6] bg-[#EEB027] rounded-full" />
+    <View className="w-full mt-container gap-medium">
+      <View className="h-[6] w-full bg-neutral rounded-full overflow-hidden">
+        <View style={{ width: `${clamped}%` }} className="h-[6] bg-accentPrimary rounded-full" />
       </View>
+
+      <View className='flex-row item-center justify-between'>
+        <ThemeText variant="caption" color="text-secondary">Overall Progress {clamped}%</ThemeText>
+        <TrophyIcon />
+      </View>
+
     </View>
   );
 };
@@ -93,15 +99,16 @@ const CourseRow: React.FC<{ item: MyCourseItemData; onPress?: (id: string) => vo
     onPress={() => onPress?.(item.id)}
     className="bg-white"
   >
-    <View className="px-[16] py-[12]">
+    <View className='pb-container pt-screen'>
       <View className="flex-row gap-[12]">
-        <Image source={require('assets/images/course-demo-one.png')} className="w-[120] h-[72] rounded-[8]" />
-        <View className="flex-1">
-          <ThemeText variant="label" weight="bold" color="onSurface">{item.title}</ThemeText>
+        <View className="flex-1 gap-tiny">
+          <ThemeText variant="label" weight="bold" color="text-primary">{item.title}</ThemeText>
           <ThemeText variant="caption" color="text-secondary" numberOfLines={2}>{item.description}</ThemeText>
-          <ProgressBar value={item.progress} />
         </View>
+        <Image source={require('assets/images/course-demo-one.png')} className="w-[150] h-[87] rounded-[4]" />
+
       </View>
+      <ProgressBar value={item.progress} />
     </View>
     <View className="h-[1] bg-border" />
   </Pressable>
@@ -131,7 +138,7 @@ export default function CoursesScreen() {
       <AppBar title="MY COURSES" />
 
       {/* Segmented filters */}
-      <View className="flex-row gap-[8] px-[20] py-[12] bg-white border-b border-border">
+      <View className="flex-row gap-2 px-screen py-item bg-white border-b border-border h-[60]">
         <SegmentedChip label="In Progress" active={filter === 'in_progress'} onPress={() => setFilter('in_progress')} />
         <SegmentedChip label="Saved" active={filter === 'saved'} onPress={() => setFilter('saved')} />
         <SegmentedChip label="Completed" active={filter === 'completed'} onPress={() => setFilter('completed')} />
@@ -146,9 +153,9 @@ export default function CoursesScreen() {
         windowSize={5}
         maxToRenderPerBatch={8}
         getItemLayout={getItemLayout}
-        contentContainerClassName="bg-white"
+        contentContainerClassName="bg-white px-screen"
         ListEmptyComponent={
-          <View className="items-center justify-center py-[32]">
+          <View className="items-center justify-center py-8">
             <ThemeText variant="body" color="muted">No courses found for this filter</ThemeText>
           </View>
         }
