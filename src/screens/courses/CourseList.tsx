@@ -12,7 +12,7 @@ export type CourseListRouteParams = { listType: 'recommended' | 'trending' | 'ne
 
 const CourseCard: React.FC<{ item: Course; onPress: (id: string) => void }> = ({ item, onPress }) => {
   return (
-    <Pressable accessibilityRole="button" onPress={() => onPress(item.id)} className="py-[16] border-b border-b-border">
+    <Pressable accessibilityRole="button" onPress={() => onPress(item.id)} className="py-4 border-b border-b-border">
       <View className='flex-row items-center gap-[16]'>
         <View className='flex-[0.6] gap-[4]'>
           <View className='self-start bg-accentBackground px-[6] py-[2] rounded-full'>
@@ -58,7 +58,9 @@ const CourseListScreen: React.FC = () => {
   const { data, isLoading, isError, refetch } = useCourses(listType);
 
   const onCardPress = useCallback((id: string) => {
-    // Placeholder for future navigation to Course Detail
+    // Navigate to Course Details screen
+    // @ts-ignore - Root navigator handles this route
+    (navigation as any).navigate('Course-Details-Screen', { courseId: id });
   }, []);
 
   if (isLoading) {
@@ -73,7 +75,7 @@ const CourseListScreen: React.FC = () => {
     return (
       <View style={{ flex: 1 }} className="items-center justify-center bg-surface p-[20]">
         <ThemeText variant="body" color="primary">Failed to load courses.</ThemeText>
-        <Pressable accessibilityRole="button" onPress={() => refetch()} className="mt-[12]">
+        <Pressable accessibilityRole="button" onPress={() => refetch()} className="mt-item">
           <ThemeText variant="label" weight="bold" color="primary">Retry</ThemeText>
         </Pressable>
       </View>
@@ -93,7 +95,7 @@ const CourseListScreen: React.FC = () => {
         removeClippedSubviews
         windowSize={5}
         maxToRenderPerBatch={10}
-        contentContainerClassName="flex-grow px-[20] pt-[16] bg-[#f8f8f8]"
+        contentContainerClassName="flex-grow px-screen pt-4 bg-[#f8f8f8]"
       />
     </View>
   );
