@@ -31,14 +31,14 @@ const CourseContainer: React.FC<Props> = ({
         source={require("assets/images/course-demo-one.png")}
         className="w-full h-[135] rounded-t-[8]"
       />
-      <View className="absolute top-[8] left-[8] bg-accentBackground px-[6] py-[2] rounded-full">
+      <View className="absolute top-2 left-2 bg-accentBackground px-label py-tiny rounded-full">
         <ThemeText variant="caption" weight="bold" color="text-primary">{item?.category}</ThemeText>
       </View>
-      <View className="absolute top-[8] right-[8] flex-row items-center gap-[4] bg-white px-[6] py-[2] rounded-[4] border border-border">
+      <View className="absolute top-2 right-2 flex-row items-center gap-1 bg-white px-label py-tiny rounded border border-border">
         <RatingIcon />
         <ThemeText variant="caption" weight="medium" color="text-secondary">4.7</ThemeText>
       </View>
-      <View className="gap-[4] p-[12]">
+      <View className="gap-1 p-item">
         <ThemeText variant="label" weight="bold">{item?.title}</ThemeText>
         <ThemeText variant="caption" color="text-secondary" numberOfLines={2}>Learn the basics of financial modelling, including cash flow forecas</ThemeText>
 
@@ -79,7 +79,7 @@ const CourseContainer: React.FC<Props> = ({
         removeClippedSubviews
         windowSize={3}
         maxToRenderPerBatch={3}
-        contentContainerClassName="mt-[20] px-[20] gap-[16]"
+        contentContainerClassName="mt-5 px-screen gap-4"
       />
     </View>
   )
