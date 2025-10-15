@@ -4,7 +4,8 @@ import { StatusBar } from "expo-status-bar";
 import { ThemeText } from "../../components/ui/ThemeText";
 import { useAppStore } from "../../store/useAppStore";
 import { useNavigation } from "@react-navigation/native";
-import { Ionicons } from "@expo/vector-icons";
+import type { NavigationProp } from "@react-navigation/native";
+import type { AuthStackParamList } from "@/@types/navigation";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useForm, Controller, SubmitHandler, Resolver } from "react-hook-form";
 import { z } from "zod";
@@ -12,13 +13,14 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import AppBar from "../../components/ui/AppBar";
 import ThemeInput from "../../components/ui/ThemeInput";
 import ThemeButton from "../../components/ui/ThemeButton";
-import { CheckboxIcon, PasswordEyeIcon, RememberMeFilledIcon, RememberMeIcon } from "@/components/ui/Icon";
+import { PasswordEyeIcon, RememberMeFilledIcon, RememberMeIcon } from "@/components/ui/Icon";
 
 export default function LoginScreen() {
   const setAuthenticated = useAppStore((s) => s.setAuthenticated);
   const rememberMe = useAppStore((s) => s.rememberMe);
   const setRememberMe = useAppStore((s) => s.setRememberMe);
-  const navigation = useNavigation();
+  // Typed navigation to enable navigating to Auth stack routes like `ProfileCreation`
+  const navigation = useNavigation<NavigationProp<AuthStackParamList>>();
 
   // Zod schema (supports email or phone login)
   const loginSchema = z.discriminatedUnion("loginMethod", [
@@ -64,6 +66,8 @@ export default function LoginScreen() {
 
   const onSubmit: SubmitHandler<LoginFormValues> = (data) => {
     // TODO: integrate API auth with `data`
+
+    navigation.navigate("");
     setAuthenticated(true);
   };
 
@@ -247,7 +251,7 @@ export default function LoginScreen() {
               />
 
               <Pressable
-                onPress={() => navigation.navigate("ForgotPassword" as never)}
+                onPress={() => navigation.navigate("ForgotPassword")}
                 className="items-center"
               >
                 <ThemeText variant="body" weight="medium" className="text-primary">
