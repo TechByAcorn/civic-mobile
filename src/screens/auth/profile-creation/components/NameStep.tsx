@@ -34,14 +34,13 @@ export default function NameStep({ initialValues, onContinue }: NameStepProps) {
 
   return (
     <StepLayout
-      headerTitle="Create profile"
-      title="What is your name?"
+      headerTitle="What is your name?"
       currentStep={1}
       totalSteps={2}
       continueDisabled={!isValid}
       onContinue={handleSubmit(onSubmit)}
     >
-      <View className="gap-item">
+      <View className="gap-section">
         <Controller
           control={control}
           name="firstName"
@@ -50,9 +49,9 @@ export default function NameStep({ initialValues, onContinue }: NameStepProps) {
               label="First Name"
               value={value}
               onBlur={onBlur}
+              autoFocus
               onChangeText={onChange}
               testID="profile-first-name"
-              error={errors.firstName?.message}
             />
           )}
         />
@@ -66,7 +65,6 @@ export default function NameStep({ initialValues, onContinue }: NameStepProps) {
               onBlur={onBlur}
               onChangeText={onChange}
               testID="profile-last-name"
-              error={errors.lastName?.message}
             />
           )}
         />
