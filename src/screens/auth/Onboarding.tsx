@@ -103,7 +103,7 @@ export default function OnboardingScreen() {
       {/* CTA */}
       <View className="px-screen pb-20 gap-section">
         <Pressable
-          onPress={() => navigation.navigate('Login' as never)}
+          onPress={() => navigation.navigate('App' as never)}
           className="mt-2 w-full rounded-[8] bg-black px-4 h-[44] items-center justify-center"
           accessibilityRole="button"
           testID="onboarding-get-started-button"
