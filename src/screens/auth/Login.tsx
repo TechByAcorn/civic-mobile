@@ -2,27 +2,26 @@ import React, { useState } from "react";
 import { Image, KeyboardAvoidingView, Linking, Platform, Pressable, ScrollView, View } from "react-native";
 import { StatusBar } from "expo-status-bar";
 import { ThemeText } from "../../components/ui/ThemeText";
+import { SafeAreaView } from "react-native-safe-area-context";
+import AppBar from "../../components/ui/AppBar";
+import ThemeInput from "../../components/ui/ThemeInput";
+import ThemeButton from "../../components/ui/ThemeButton";
+import { DropdownArrowIcon, PasswordEyeIcon, RememberMeFilledIcon, RememberMeIcon } from "@/components/ui/Icon";
+
+import { z } from "zod";
+import { useForm, Controller, SubmitHandler, Resolver } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useAppStore } from "../../store/useAppStore";
 import { useNavigation } from "@react-navigation/native";
 import type { NavigationProp } from "@react-navigation/native";
 import type { AuthStackParamList } from "@/@types/navigation";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { useForm, Controller, SubmitHandler, Resolver } from "react-hook-form";
-import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
-import AppBar from "../../components/ui/AppBar";
-import ThemeInput from "../../components/ui/ThemeInput";
-import ThemeButton from "../../components/ui/ThemeButton";
-import { PasswordEyeIcon, RememberMeFilledIcon, RememberMeIcon } from "@/components/ui/Icon";
 
 export default function LoginScreen() {
-  const setAuthenticated = useAppStore((s) => s.setAuthenticated);
+  // const setAuthenticated = useAppStore((s) => s.setAuthenticated);
   const rememberMe = useAppStore((s) => s.rememberMe);
   const setRememberMe = useAppStore((s) => s.setRememberMe);
-  // Typed navigation to enable navigating to Auth stack routes like `ProfileCreation`
   const navigation = useNavigation<NavigationProp<AuthStackParamList>>();
 
-  // Zod schema (supports email or phone login)
   const loginSchema = z.discriminatedUnion("loginMethod", [
     z.object({
       loginMethod: z.literal("email"),
@@ -65,10 +64,8 @@ export default function LoginScreen() {
   const [showPassword, setShowPassword] = useState(false);
 
   const onSubmit: SubmitHandler<LoginFormValues> = (data) => {
-    // TODO: integrate API auth with `data`
-
-    navigation.navigate("");
-    setAuthenticated(true);
+    navigation.navigate("ProfileCreation");
+    // setAuthenticated(true);
   };
 
   return (
@@ -184,6 +181,13 @@ export default function LoginScreen() {
                         autoCapitalize="none"
                         testID="login-phone-input"
                         errorText={errorsAny.phone ? String(errorsAny.phone?.message) : undefined}
+                        leftPaddingClassName='pl-[60px]'
+                        leftComponent={
+                          <View className="flex-row items-center px-medium">
+                            <ThemeText variant="body">US</ThemeText>
+                            <DropdownArrowIcon />
+                          </View>
+                        }
                       />
                     )}
                   />
