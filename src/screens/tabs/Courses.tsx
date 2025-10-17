@@ -1,26 +1,12 @@
 import React, { useCallback, useMemo, useState } from 'react';
-import { View, FlatList, ListRenderItemInfo, Pressable, Image } from 'react-native';
+import { View, FlatList, ListRenderItemInfo, Pressable } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
 import AppBar from '@/components/ui/AppBar';
 import { ThemeText } from '@/components/ui/ThemeText';
-import { TrophyIcon } from '@/components/ui/Icon';
+import CourseRow from '@/components/courses/CourseRow';
+import type { MyCourseItemData, CourseStatus } from '@/types/courses';
 
-// Types for My Courses data
-type CourseStatus = 'in_progress' | 'saved' | 'completed';
-
-interface MyCourseItemData {
-  id: string;
-  title: string;
-  description: string;
-  category: string;
-  duration: string;
-  modules: number;
-  progress: number; // percentage 0..100
-  status: CourseStatus;
-}
-
-// Local mock data for now (replace with API integration later)
 const myCoursesMock: MyCourseItemData[] = [
   {
     id: 'm-201',
@@ -73,44 +59,6 @@ const SegmentedChip: React.FC<{ label: string; active?: boolean; onPress: () => 
     <ThemeText variant="label" weight={'medium'} color={active ? 'text-white' : 'text-primary'}>
       {label}
     </ThemeText>
-  </Pressable>
-);
-
-const ProgressBar: React.FC<{ value: number }> = ({ value }) => {
-  const clamped = Math.max(0, Math.min(100, value));
-  return (
-    <View className="w-full mt-container gap-medium">
-      <View className="h-[6] w-full bg-neutral rounded-full overflow-hidden">
-        <View style={{ width: `${clamped}%` }} className="h-[6] bg-accentPrimary rounded-full" />
-      </View>
-
-      <View className='flex-row item-center justify-between'>
-        <ThemeText variant="caption" color="text-secondary">Overall Progress {clamped}%</ThemeText>
-        <TrophyIcon />
-      </View>
-
-    </View>
-  );
-};
-
-const CourseRow: React.FC<{ item: MyCourseItemData; onPress?: (id: string) => void }> = ({ item, onPress }) => (
-  <Pressable
-    accessibilityRole="button"
-    onPress={() => onPress?.(item.id)}
-    className="bg-white"
-  >
-    <View className='pb-container pt-screen'>
-      <View className="flex-row gap-[12]">
-        <View className="flex-1 gap-tiny">
-          <ThemeText variant="label" weight="bold" color="text-primary">{item.title}</ThemeText>
-          <ThemeText variant="caption" color="text-secondary" numberOfLines={2}>{item.description}</ThemeText>
-        </View>
-        <Image source={require('assets/images/course-demo-one.png')} className="w-[150] h-[87] rounded-[4]" />
-
-      </View>
-      <ProgressBar value={item.progress} />
-    </View>
-    <View className="h-[1] bg-border" />
   </Pressable>
 );
 
