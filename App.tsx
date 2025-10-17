@@ -24,6 +24,7 @@ import { ThemeText } from '@/components/ui/ThemeText';
 const Stack = createNativeStackNavigator();
 const RootStack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
+const MainStack = createNativeStackNavigator();
 
 function TabsNavigator() {
   return (
@@ -83,7 +84,6 @@ function RootNavigator() {
 function AuthStack() {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="Onboarding" component={OnboardingScreen} />
       <Stack.Screen name="Login" component={LoginScreen} />
       <Stack.Screen name="ProfileCreation" component={ProfileCreationScreen} />
       <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} />
@@ -93,19 +93,28 @@ function AuthStack() {
   );
 }
 
+function MainNavigator() {
+  return (
+    <MainStack.Navigator screenOptions={{ headerShown: false }}>
+      <MainStack.Screen name="Onboarding" component={OnboardingScreen} />
+      {/* App stack (non-auth) that includes Tabs and course flows */}
+      <MainStack.Screen name="App" component={RootNavigator} />
+      {/* Auth stack for login and related flows */}
+      <MainStack.Screen name="Auth" component={AuthStack} />
+    </MainStack.Navigator>
+  );
+}
+
 export default function App() {
   const theme = useAppStore((s) => s.theme);
-  const isAuthenticated = useAppStore((s) => s.isAuthenticated);
+  // We keep isAuthenticated for future but initial flow goes through Onboarding -> App (guest mode)
+  // const isAuthenticated = useAppStore((s) => s.isAuthenticated);
 
   return (
     <AppProviders>
       <View className={theme === 'dark' ? 'dark flex-1' : 'flex-1'}>
         <NavigationContainer theme={theme === 'dark' ? DarkTheme : DefaultTheme}>
-          {!isAuthenticated ? (
-            <RootNavigator />
-          ) : (
-            <AuthStack />
-          )}
+          <MainNavigator />
         </NavigationContainer>
       </View>
     </AppProviders>
