@@ -19,7 +19,7 @@ const ThemeButton: React.FC<ThemeButtonProps> = ({
   testID = 'theme-button',
   ...rest
 }) => {
-  const baseClasses = 'h-[44] rounded-lg items-center justify-center';
+  const baseClasses = 'h-[44] rounded-[8] items-center justify-center';
   const stateClasses = disabled ? 'bg-disabled' : 'bg-black';
 
   const handlePress: NonNullable<PressableProps['onPress']> = (e) => {
