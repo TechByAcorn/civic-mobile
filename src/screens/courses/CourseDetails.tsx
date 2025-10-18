@@ -1,16 +1,21 @@
-import React from 'react';
-import { View, Image, ActivityIndicator, Pressable, ScrollView } from 'react-native';
+import React, { useMemo, useState, useEffect, useRef } from 'react';
+import { View, Image, ActivityIndicator, Pressable, ScrollView, Animated, Easing } from 'react-native';
 import { useRoute, useNavigation } from '@react-navigation/native';
 import { StatusBar } from 'expo-status-bar';
 import { LinearGradient } from 'expo-linear-gradient';
 import { ThemeText } from '@/components/ui/ThemeText';
 import ThemeButton from '@/components/ui/ThemeButton';
-import { BackIcon, CourseDurationIcon, CourseEnrolledStudentIcon, CourseLanguageIcon, CourseLessonIcon, DurationIcon, RatingIcon, SlideShowIcon } from '@/components/ui/Icon';
-import type { RootStackParamList } from '@/@types/navigation';
-import type { NavigationProp } from '@react-navigation/native';
+import GradientOverlay from '@/components/ui/GradientOverlay';
+import { BackIcon, RatingIcon } from '@/components/ui/Icon';
 import { useCourse } from '@/services/courses';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import EventItem from '@/components/Event/Item';
+import SegmentedTabs from '../../components/ui/SegmentedTabs';
+import OverviewSection from './sections/OverviewSection';
+import ContentSection from './sections/ContentSection';
+import InstructorSection from './sections/InstructorSection';
+import ReviewsSection from './sections/ReviewsSection';
+import type { RootStackParamList } from '@/@types/navigation';
+import type { NavigationProp } from '@react-navigation/native';
 
 type RouteParams = RootStackParamList['Course-Details-Screen'];
 
@@ -21,6 +26,48 @@ const CourseDetailsScreen: React.FC = () => {
   const { courseId } = (route.params as RouteParams);
 
   const { data: course, isLoading, isError, refetch } = useCourse(courseId);
+
+  const tabs = useMemo(() => [
+    { key: 'overview', label: 'Overview' },
+    { key: 'content', label: 'Course Content' },
+    { key: 'instructor', label: 'Instructor' },
+    { key: 'reviews', label: 'Rating and Reviews' },
+  ], []);
+
+  const [activeTab, setActiveTab] = useState<'overview' | 'content' | 'instructor' | 'reviews'>('overview');
+  const [showAppBar, setShowAppBar] = useState(false);
+  // Banner image has fixed height
+  const HERO_HEIGHT = 350;
+  const [appBarContentHeight, setAppBarContentHeight] = useState(0);
+
+  // Animated values for AppBar appearance
+  const appBarOpacity = useRef(new Animated.Value(0)).current;
+  const appBarTranslateY = useRef(new Animated.Value(-20)).current;
+  const appBarHeight = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    // Animate opacity/translate on inner node (native driver), and height on outer node (JS driver)
+    Animated.parallel([
+      Animated.timing(appBarOpacity, {
+        toValue: showAppBar ? 1 : 0,
+        duration: 180,
+        easing: Easing.out(Easing.cubic),
+        useNativeDriver: true,
+      }),
+      Animated.timing(appBarTranslateY, {
+        toValue: showAppBar ? 0 : -10,
+        duration: 180,
+        easing: Easing.out(Easing.cubic),
+        useNativeDriver: true,
+      }),
+      Animated.timing(appBarHeight, {
+        toValue: showAppBar ? appBarContentHeight : 0,
+        duration: 180,
+        easing: Easing.out(Easing.cubic),
+        useNativeDriver: false, // height not supported by native driver
+      }),
+    ]).start();
+  }, [showAppBar, appBarContentHeight, appBarOpacity, appBarTranslateY, appBarHeight]);
 
   if (isLoading) {
     return (
@@ -43,117 +90,129 @@ const CourseDetailsScreen: React.FC = () => {
 
   return (
     <View style={{ flex: 1 }} className="bg-white">
-      <StatusBar style="light" />
-      <View style={{ position: 'relative' }} className="rounded-[12]">
-        <Image
-          source={require('assets/images/course-demo-one.png')}
-          className="w-full h-[350]"
-        />
-        <LinearGradient
-          colors={[
-            'rgba(0,0,0,0)',
-            'rgba(0,0,0,0.25)',
-            'rgba(0,0,0,0.55)',
-            'rgba(0,0,0,0.9)'
-          ]}
-          locations={[0, 0.5, 0.8, 1]}
-          style={{ position: 'absolute', left: 0, right: 0, top: 0, bottom: 0 }}
-        />
-
-        {/* Back button on top-left */}
-        <View style={{ position: 'absolute', top: insets.top + 12, left: 20 }}>
-          <Pressable accessibilityRole="button" onPress={() => navigation.goBack()}>
-            <BackIcon />
-          </Pressable>
-        </View>
-        <View style={{ position: 'absolute', left: 0, right: 0, bottom: 24 }} className="px-screen gap-medium">
-          <View className='flex-row items-center gap-medium'>
-            <View className='bg-accentBackground px-[6] py-[2] rounded-full'>
-              <ThemeText variant='caption' weight='bold'>{course?.category}</ThemeText>
-            </View>
-            <View className='flex-row items-center gap-tiny'>
-              <RatingIcon />
-              <ThemeText variant='caption' weight='medium' color='text-white'>4.7</ThemeText>
-            </View>
-          </View>
-          <ThemeText variant="h2" weight="bold" color="text-white">{course.title}</ThemeText>
-          <ThemeText variant="label" color="text-white" numberOfLines={3}>
-            If you are like most living paycheck to paycheck, saving money feels almost impossible, as expenses can seem to outweigh your income. However, there is always a way for you to save money if you review your income, plan accordingly, and keep consistent efforts to setting aside small amounts.
-          </ThemeText>
-          <Pressable>
-            <ThemeText variant='label' weight='bold' color='text-white'>Read More</ThemeText>
-          </Pressable>
-        </View>
-      </View>
-
-      {/* Meta row */}
-      <View>
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerClassName='px-screen gap-item my-section'>
-          <View className="self-start bg-neutral px-medium py-tiny rounded-full">
-            <ThemeText variant="label" weight="medium" color="text-primary">Overview</ThemeText>
-          </View>
-          <View className="self-start bg-neutral px-medium py-tiny rounded-full">
-            <ThemeText variant="label" weight="medium" color="text-primary">Course Content</ThemeText>
-          </View>
-          <View className="self-start bg-neutral px-medium py-tiny rounded-full">
-            <ThemeText variant="label" weight="medium" color="text-primary">Instructor</ThemeText>
-          </View>
-          <View className="self-start bg-neutral px-medium py-tiny rounded-full">
-            <ThemeText variant="label" weight="medium" color="text-primary">Rating and Reviews</ThemeText>
-          </View>
-        </ScrollView>
-      </View>
-
-      <ScrollView contentContainerClassName='flex-grow'>
-
-        <View className='mx-screen'>
-          <View className='bg-surface border border-inputBorder rounded-[8] p-container'>
-            <View className='flex-row items-center mb-item gap-item'>
-              <CourseDurationIcon />
-              <ThemeText variant='label' weight='bold'>20 - 30 mins</ThemeText>
-            </View>
-            <View className='flex-row items-center mb-item gap-item'>
-              <CourseLessonIcon />
-              <ThemeText variant='label' weight='bold'>50 Lessons</ThemeText>
-            </View>
-            <View className='flex-row items-center mb-item gap-item'>
-              <CourseEnrolledStudentIcon />
-              <ThemeText variant='label' weight='bold'>110 Enrolled students</ThemeText>
-            </View>
-            <View className='flex-row items-center mb-item gap-item'>
-              <CourseLanguageIcon />
-              <ThemeText variant='label' weight='bold'>English Language</ThemeText>
-            </View>
-          </View>
-        </View>
-
-        <View className="mx-screen my-sectionLg">
+      <StatusBar style={showAppBar ? 'dark' : 'light'} />
+      <GradientOverlay
+        style={{ position: 'absolute', top: 0, left: 0, right: undefined, bottom: undefined, width: '50%', height: insets.top, zIndex: 10 }}
+        startColor={'rgba(0,0,0,0)'}
+        endColor={'rgba(0,0,0,1)'}
+      />
+      <ScrollView
+        stickyHeaderIndices={[1]}
+        contentContainerClassName="pb-[116]"
+        onScroll={({ nativeEvent }) => {
+          const y = nativeEvent?.contentOffset?.y ?? 0;
+          setShowAppBar(y >= Math.max(0, HERO_HEIGHT - 1));
+        }}
+        scrollEventThrottle={16}
+      >
+        <View
+          style={{ position: 'relative' }}
+          className="rounded-[12]"
+        >
           <Image
-            source={require("assets/images/certificate.png")}
-            className="w-full h-[200]"
-            resizeMode="contain"
+            source={require('assets/images/course-demo-one.png')}
+            className="w-full h-[350]"
+          />
+          <LinearGradient
+            colors={[
+              'rgba(0,0,0,0)',
+              'rgba(0,0,0,0.5)',
+              'rgba(0,0,0,1)',
+              'rgba(0,0,0,1)'
+            ]}
+            locations={[1, 0.1, 1, 1]}
+            style={{ position: 'absolute', left: 0, right: 0, top: 0, bottom: 0 }}
+          />
+
+          <LinearGradient
+            colors={[
+              'rgba(0,0,0,0)',
+              'rgba(0,0,0,0.5)',
+              'rgba(0,0,0,1)',
+              'rgba(0,0,0,1)'
+            ]}
+            locations={[0, 0.5, 0.8, 1]}
+            style={{ position: 'absolute', left: 0, right: 0, top: 0, bottom: 0 }}
+          />
+
+          <View style={{ position: 'absolute', top: insets.top + 12, left: 20 }}>
+            <Pressable accessibilityRole="button" onPress={() => navigation.goBack()}>
+              <BackIcon color={'white'} />
+            </Pressable>
+          </View>
+
+          <View style={{ position: 'absolute', left: 0, right: 0, bottom: 24 }} className="px-screen gap-medium">
+            <View className='flex-row items-center gap-medium'>
+              <View className='bg-accentBackground px-[6] py-[2] rounded-full'>
+                <ThemeText variant='caption' weight='bold'>{course?.category}</ThemeText>
+              </View>
+              <View className='flex-row items-center gap-tiny'>
+                <RatingIcon />
+                <ThemeText variant='caption' weight='medium' color='text-white'>{typeof course?.rating === 'number' ? course.rating.toFixed(1) : '—'}</ThemeText>
+              </View>
+            </View>
+            <ThemeText variant="h2" weight="bold" color="text-white">{course.title}</ThemeText>
+            <ThemeText variant="label" color="text-white" numberOfLines={3}>
+              If you are like most living paycheck to paycheck, saving money feels almost impossible, as expenses can seem to outweigh your income. However, there is always a way for you to save money if you review your income, plan accordingly, and keep consistent efforts to setting aside small amounts.
+            </ThemeText>
+            <Pressable>
+              <ThemeText variant='label' weight='bold' color='text-white'>Read More</ThemeText>
+            </Pressable>
+          </View>
+        </View>
+
+        <View className="bg-white">
+          <Animated.View style={{ height: appBarHeight }}>
+            <Animated.View style={{ opacity: appBarOpacity, transform: [{ translateY: appBarTranslateY }] }}>
+              <View
+                style={{ paddingTop: insets.top }}
+                className="px-screen py-container flex-row items-center justify-center gap-item"
+                onLayout={(e) => setAppBarContentHeight(Math.ceil(e.nativeEvent.layout.height))}
+              >
+                <Pressable accessibilityRole="button" className='absolute left-[20]' style={{ top: insets.top }} onPress={() => navigation.goBack()}>
+                  <BackIcon />
+                </Pressable>
+                <ThemeText variant="h4" weight="bold" className='absolute' style={{ top: insets.top + 4 }}>Course Details</ThemeText>
+              </View>
+            </Animated.View>
+          </Animated.View>
+          <SegmentedTabs
+            tabs={tabs}
+            activeKey={activeTab}
+            onChange={(key) => setActiveTab(key as any)}
           />
         </View>
 
-        <View className="px-screen">
-          <ThemeText variant='h4' weight='bold' className='mb-medium'>Overview</ThemeText>
-          <ThemeText variant="body" color="text-secondary">
-            Ready to take control of your finances? This course on Developing Your Saving Goals is designed to guide you 
-            through the essentials of setting and achieving your financial objectives. 
-            You'll learn practical strategies to create realistic saving goals, understand budgeting techniques, 
-            and explore investment options that align with your aspirations. 
-            By the end of the course, you'll have a personalized saving plan to help you reach your financial dreams, 
-            whether it's buying a home, traveling the world, or building an emergency fund.
-          </ThemeText>
+        {/* Content sections */}
+        <View>
+          {activeTab === 'overview' && (
+            <OverviewSection course={course} />
+          )}
+          {activeTab === 'content' && (
+            <ContentSection course={course} />
+          )}
+          {activeTab === 'instructor' && (
+            <InstructorSection course={course} />
+          )}
+          {activeTab === 'reviews' && (
+            <ReviewsSection course={course} />
+          )}
         </View>
       </ScrollView>
 
-      <View className="px-screen h-[100] pt-[16] border-t border-t-border">
-        <ThemeButton
-          label="Start Course"
-          onPress={() => {/* TODO: navigate to course player */ }}
-          testID="start-course-button"
-        />
+      {/* Bottom CTA bar (unchanged) */}
+      <View className="px-screen h-[100] pt-[16] border-t border-t-border flex-row justify-between">
+        <View className='flex-1 gap-tiny'>
+          <ThemeText variant='caption' color="text-secondary">Course Fee:</ThemeText>
+          <ThemeText variant='h4'>Free</ThemeText>
+        </View>
+        <View className='flex-1'>
+          <ThemeButton
+            label="Enroll to Get Started"
+            onPress={() => {/* TODO: navigate to course player */ }}
+            testID="start-course-button"
+          />
+        </View>
       </View>
     </View>
   );
