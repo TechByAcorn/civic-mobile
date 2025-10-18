@@ -12,6 +12,7 @@ export type RootStackParamList = {
   Tabs: NavigatorScreenParams<TabsParamList> | undefined;
   'Course-List-Screen': { listType: 'recommended' | 'trending' | 'new'; title?: string };
   'Course-Details-Screen': { courseId: string };
+  'Lesson-Details-Screen': { lessonId?: string; courseId?: string; moduleId?: string; title?: string; type?: 'video' | 'text' | 'quiz'; duration?: string };
 };
 
 // Auth stack routes

@@ -18,6 +18,7 @@ import CoursesScreen from './src/screens/tabs/Courses';
 import ProfileScreen from './src/screens/tabs/Profile';
 import CourseListScreen from './src/screens/courses/CourseList';
 import CourseDetailsScreen from './src/screens/courses/CourseDetails';
+import LessonDetailsScreen from './src/screens/lessons/LessonDetails';
 import { TabActiveBookShelfIcon, TabActiveHomeIcon, TabActiveProfileIcon, TabBookShelfIcon, TabHomeIcon, TabProfileIcon } from '@/components/ui/Icon';
 import { ThemeText } from '@/components/ui/ThemeText';
 
@@ -77,6 +78,7 @@ function RootNavigator() {
       <RootStack.Screen name="Tabs" component={TabsNavigator} />
       <RootStack.Screen name="Course-List-Screen" component={CourseListScreen} />
       <RootStack.Screen name="Course-Details-Screen" component={CourseDetailsScreen} />
+      <RootStack.Screen name="Lesson-Details-Screen" component={LessonDetailsScreen} />
     </RootStack.Navigator>
   );
 }
