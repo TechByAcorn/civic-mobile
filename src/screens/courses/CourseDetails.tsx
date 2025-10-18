@@ -91,11 +91,6 @@ const CourseDetailsScreen: React.FC = () => {
   return (
     <View style={{ flex: 1 }} className="bg-white">
       <StatusBar style={showAppBar ? 'dark' : 'light'} />
-      <GradientOverlay
-        style={{ position: 'absolute', top: 0, left: 0, right: undefined, bottom: undefined, width: '50%', height: insets.top, zIndex: 10 }}
-        startColor={'rgba(0,0,0,0)'}
-        endColor={'rgba(0,0,0,1)'}
-      />
       <ScrollView
         stickyHeaderIndices={[1]}
         contentContainerClassName="pb-[116]"
