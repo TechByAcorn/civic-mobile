@@ -5,8 +5,12 @@ import { StatusBar } from 'expo-status-bar';
 import { MailIcon, ProfileAchievedCertificateIcon, ProfileAvgLearningIcon, ProfileCompletedCourseIcon, ProfileEnrolledCourseIcon, ProfileInProgressCourseIcon, SettingIcon } from '@/components/ui/Icon';
 import CourseRow from '@/components/courses/CourseRow';
 import type { MyCourseItemData } from '@/types/courses';
+import { useNavigation } from '@react-navigation/native';
+import type { NavigationProp } from '@react-navigation/native';
+import type { RootStackParamList } from '@/@types/navigation';
 
 export default function ProfileScreen() {
+  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
   return (
     <View style={{ flex: 1 }} className="bg-surface">
       <StatusBar style={"dark"} />
@@ -37,7 +41,7 @@ export default function ProfileScreen() {
                 <ThemeText variant='caption' color='text-secondary'>james@email.io</ThemeText>
               </View>
             </View>
-            <Pressable className='w-[36] h-[36] items-center justify-center rounded-[12] border border-disabled'>
+            <Pressable onPress={() => navigation.navigate('Setting-Root-Screen')} className='w-[36] h-[36] items-center justify-center rounded-[12] border border-disabled'>
               <SettingIcon />
             </Pressable>
           </View>
