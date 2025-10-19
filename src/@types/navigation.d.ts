@@ -13,6 +13,10 @@ export type RootStackParamList = {
   'Course-List-Screen': { listType: 'recommended' | 'trending' | 'new'; title?: string };
   'Course-Details-Screen': { courseId: string };
   'Lesson-Details-Screen': { lessonId?: string; courseId?: string; moduleId?: string; title?: string; type?: 'video' | 'text' | 'quiz'; duration?: string };
+  "Lesson-Completed-Screen": undefined;
+  "Course-Completed-Screen": undefined;
+  "Setting-Root-Screen": undefined;
+  "Setting-Preferences-Screen": undefined;
 };
 
 // Auth stack routes
