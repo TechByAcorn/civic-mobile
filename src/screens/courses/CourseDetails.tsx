@@ -204,7 +204,11 @@ const CourseDetailsScreen: React.FC = () => {
         <View className='flex-1'>
           <ThemeButton
             label="Enroll to Get Started"
-            onPress={() => {/* TODO: navigate to course player */ }}
+            onPress={() => navigation.navigate("Lesson-Details-Screen", {
+              title: course.title,
+              type: 'video',
+              duration: '10:00',
+            })}
             testID="start-course-button"
           />
         </View>
