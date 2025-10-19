@@ -21,6 +21,10 @@ import CourseDetailsScreen from './src/screens/courses/CourseDetails';
 import LessonDetailsScreen from './src/screens/lessons/LessonDetails';
 import { TabActiveBookShelfIcon, TabActiveHomeIcon, TabActiveProfileIcon, TabBookShelfIcon, TabHomeIcon, TabProfileIcon } from '@/components/ui/Icon';
 import { ThemeText } from '@/components/ui/ThemeText';
+import LessonCompletedScreen from '@/screens/lessons/LessonCompleted';
+import CourseCompletedScreen from '@/screens/lessons/CourseCompleted';
+import SettingRootScreen from '@/screens/setting/Root';
+import PreferencesScreen from '@/screens/setting/Preferences';
 
 const Stack = createNativeStackNavigator();
 const RootStack = createNativeStackNavigator();
@@ -79,6 +83,10 @@ function RootNavigator() {
       <RootStack.Screen name="Course-List-Screen" component={CourseListScreen} />
       <RootStack.Screen name="Course-Details-Screen" component={CourseDetailsScreen} />
       <RootStack.Screen name="Lesson-Details-Screen" component={LessonDetailsScreen} />
+      <RootStack.Screen name="Lesson-Completed-Screen" component={LessonCompletedScreen} />
+      <RootStack.Screen name="Course-Completed-Screen" component={CourseCompletedScreen} />
+      <RootStack.Screen name="Setting-Root-Screen" component={SettingRootScreen} />
+      <RootStack.Screen name="Setting-Preferences-Screen" component={PreferencesScreen} />
     </RootStack.Navigator>
   );
 }
