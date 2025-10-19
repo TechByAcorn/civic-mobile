@@ -3,9 +3,9 @@ import { View } from 'react-native';
 import { ThemeText } from '@/components/ui/ThemeText';
 
 export interface ProgressBarProps {
-  value: number; // 0..100
-  label?: string; // left label text, default: 'Overall Progress'
-  rightIcon?: ReactNode; // optional right-side icon
+  value: number;
+  label?: string;
+  rightIcon?: ReactNode;
 }
 
 const ProgressBar: React.FC<ProgressBarProps> = ({ value, label = 'Overall Progress', rightIcon }) => {
