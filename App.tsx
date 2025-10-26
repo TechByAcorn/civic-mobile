@@ -1,11 +1,11 @@
 import React from 'react';
-import { NavigationContainer, DefaultTheme, DarkTheme } from '@react-navigation/native';
+import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { View } from 'react-native';
 import { AppProviders } from './src/providers/AppProviders';
-import { useAppStore } from './src/store/useAppStore';
 import './global.css';
+import ToastManager, { Toast } from 'toastify-react-native'
 
 // Screens (we'll keep them where they are for now and import directly)
 import OnboardingScreen from './src/screens/auth/Onboarding';
@@ -25,6 +25,14 @@ import LessonCompletedScreen from '@/screens/lessons/LessonCompleted';
 import CourseCompletedScreen from '@/screens/lessons/CourseCompleted';
 import SettingRootScreen from '@/screens/setting/Root';
 import PreferencesScreen from '@/screens/setting/Preferences';
+import AccountDeletionScreen from '@/screens/setting/deletion/Root';
+import AccountDeletionSuccess from '@/screens/setting/deletion/Success';
+import TermsConditionsScreen from '@/screens/setting/TermsConditions';
+import PrivacyPolicyScreen from '@/screens/setting/PrivacyPolicy';
+import SettingNotificationScreen from '@/screens/setting/Notification';
+import { NotificationToast } from '@/components/ui/Toast';
+import { ToastConfigParams } from 'toastify-react-native/utils/interfaces';
+import EditProfileScreen from '@/screens/setting/profile/Edit';
 
 const Stack = createNativeStackNavigator();
 const RootStack = createNativeStackNavigator();
@@ -87,6 +95,13 @@ function RootNavigator() {
       <RootStack.Screen name="Course-Completed-Screen" component={CourseCompletedScreen} />
       <RootStack.Screen name="Setting-Root-Screen" component={SettingRootScreen} />
       <RootStack.Screen name="Setting-Preferences-Screen" component={PreferencesScreen} />
+      <RootStack.Screen name="Account-Deletion-Screen" component={AccountDeletionScreen} />
+      <RootStack.Screen name="Account-Deletion-Success" component={AccountDeletionSuccess} />
+      <RootStack.Screen name="Terms-Conditions-Screen" component={TermsConditionsScreen} />
+      <RootStack.Screen name="Privacy-Policy-Screen" component={PrivacyPolicyScreen} />
+      <RootStack.Screen name="Setting-Notification-Screen" component={SettingNotificationScreen} />
+      <RootStack.Screen name="Edit-Profile-Screen" component={EditProfileScreen} />
+      <RootStack.Screen name="Setting-Verify-OTP-Screen" component={VerifyOtpScreen} />
     </RootStack.Navigator>
   );
 }
@@ -116,15 +131,19 @@ function MainNavigator() {
 }
 
 export default function App() {
-  const theme = useAppStore((s) => s.theme);
   // We keep isAuthenticated for future but initial flow goes through Onboarding -> App (guest mode)
   // const isAuthenticated = useAppStore((s) => s.isAuthenticated);
 
+  const toastConfig = {
+    notificationToast: (props: ToastConfigParams) => <NotificationToast {...props} />,
+  }
+
   return (
     <AppProviders>
-      <View className={theme === 'dark' ? 'dark flex-1' : 'flex-1'}>
-        <NavigationContainer theme={theme === 'dark' ? DarkTheme : DefaultTheme}>
+      <View className={'flex-1'}>
+        <NavigationContainer>
           <MainNavigator />
+          <ToastManager config={toastConfig}/>
         </NavigationContainer>
       </View>
     </AppProviders>
