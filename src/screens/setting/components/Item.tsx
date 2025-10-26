@@ -1,4 +1,4 @@
-import { ArrowRightUpIcon, DropdownArrowIcon, EditProfileIcon } from "@/components/ui/Icon";
+import { DropdownArrowIcon } from "@/components/ui/Icon";
 import { ThemeText } from "@/components/ui/ThemeText";
 import React from "react";
 import { Pressable, View } from "react-native";

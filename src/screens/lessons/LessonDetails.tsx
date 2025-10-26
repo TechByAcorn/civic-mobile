@@ -12,7 +12,7 @@ import ProgressBar from '@/components/ui/ProgressBar';
 import type { NavigationProp } from '@react-navigation/native';
 import type { RootStackParamList } from '@/@types/navigation';
 
-const IS_COURSE_DONE = false;
+const IS_COURSE_DONE = true;
 
 export type LessonDetailsParams = RootStackParamList['Lesson-Details-Screen'];
 

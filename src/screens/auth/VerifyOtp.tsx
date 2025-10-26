@@ -84,10 +84,11 @@ export default function VerifyOtpScreen() {
     }
   }, [email, phone]);
 
-  const onVerify = useCallback(() => {
-    if (!isComplete) return;
-    navigation.navigate('SetNewPassword', { email });
-  }, [isComplete, navigation, email]);
+  useEffect(() => {
+    if (value && value?.length === CELL_COUNT) {
+      navigation.navigate('SetNewPassword', { email });
+    }
+  }, [value]);
 
   const handleHiddenInputChange = useCallback((t: string) => {
     const digitsOnly = t.replace(/\D/g, '').slice(0, CELL_COUNT);
@@ -160,13 +161,6 @@ export default function VerifyOtpScreen() {
               </ThemeText>
             </View>
           )}
-
-          <ThemeButton
-            label="Verify"
-            onPress={onVerify}
-            disabled={!isComplete}
-            testID="otp-verify-button"
-          />
         </View>
       </View>
     </SafeAreaView>
