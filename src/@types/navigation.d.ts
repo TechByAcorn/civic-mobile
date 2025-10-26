@@ -17,6 +17,13 @@ export type RootStackParamList = {
   "Course-Completed-Screen": undefined;
   "Setting-Root-Screen": undefined;
   "Setting-Preferences-Screen": undefined;
+  "Account-Deletion-Screen": undefined;
+  "Account-Deletion-Success": undefined;
+  "Terms-Conditions-Screen": undefined;
+  "Privacy-Policy-Screen": undefined;
+  "Setting-Notification-Screen": undefined;
+  "Edit-Profile-Screen": undefined;
+  "Setting-Verify-OTP-Screen": { email?: string; phone?: string } | undefined;
 };
 
 // Auth stack routes
