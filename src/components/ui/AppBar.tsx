@@ -5,19 +5,35 @@ import { ThemeText } from './ThemeText';
 import { BackIcon } from './Icon';
 
 export interface AppBarProps {
-  title: string;
+  title?: string;
   backComponent?: React.ReactElement;
   onBackPress?: () => void;
-  className?: string; // allow NativeWind class overrides
+  leftComponent?: React.ReactElement;
+  onLeftPress?: () => void;
+  rightComponent?: React.ReactElement;
+  className?: string;
+  backgroundColor?: string;
+  showBorder?: boolean;
 }
 
-const AppBar: React.FC<AppBarProps> = ({ title, backComponent, onBackPress, className }) => {
+const AppBar: React.FC<AppBarProps> = ({
+  title,
+  backComponent,
+  onBackPress,
+  leftComponent,
+  onLeftPress,
+  rightComponent,
+  className,
+  backgroundColor,
+  showBorder = true,
+}) => {
   const navigation = useNavigation();
 
   const handleBack = useCallback(() => {
     try {
-      if (onBackPress) {
-        onBackPress();
+      const explicitHandler = onLeftPress ?? onBackPress;
+      if (explicitHandler) {
+        explicitHandler();
         return;
       }
 
@@ -30,16 +46,22 @@ const AppBar: React.FC<AppBarProps> = ({ title, backComponent, onBackPress, clas
     } catch (e) {
       // Swallow errors to avoid crashing the UI during navigation
     }
-  }, [navigation, onBackPress]);
+  }, [navigation, onLeftPress, onBackPress]);
 
   return (
     <View
-      style={{ height: 60 }}
-      className={`flex-row items-center justify-between px-[20] bg-white border-b border-border ${className ?? ''}`}
+      testID="appbar"
+      style={{ height: 60, backgroundColor: backgroundColor ?? '#fff' }}
+      className={`relative ${showBorder ? 'border-b border-border' : ''} ${className ?? ''}`}
     >
-      <View className="w-[32]">
-        {backComponent ? (
-          <Pressable onPress={handleBack}>
+      {/* Left: Back or custom */}
+      <View className="absolute left-5 h-full items-center justify-center">
+        {leftComponent ? (
+          <Pressable accessibilityRole="button" onPress={onLeftPress} hitSlop={8}>
+            {leftComponent}
+          </Pressable>
+        ) : backComponent ? (
+          <Pressable accessibilityRole="button" onPress={onBackPress ?? handleBack} hitSlop={8}>
             {backComponent}
           </Pressable>
         ) : (
@@ -49,14 +71,19 @@ const AppBar: React.FC<AppBarProps> = ({ title, backComponent, onBackPress, clas
         )}
       </View>
 
-      {/* Center: Title */}
-      <View className="flex-1 items-center">
-        <ThemeText variant="h4" weight="bold" color="text-primary">
-          {title}
-        </ThemeText>
+      {/* Center: Title (optional) */}
+      <View className="absolute left-0 right-0 h-full items-center justify-center">
+        {title ? (
+          <ThemeText variant="h4" weight="bold" color="text-primary">
+            {title}
+          </ThemeText>
+        ) : null}
       </View>
 
-      <View className="w-[32]" />
+      {/* Right: Custom */}
+      <View className="absolute right-5 h-full items-center justify-center">
+        {rightComponent ?? null}
+      </View>
     </View>
   );
 };

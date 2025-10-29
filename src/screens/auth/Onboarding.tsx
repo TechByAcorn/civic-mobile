@@ -44,7 +44,7 @@ export default function OnboardingScreen() {
   };
 
   return (
-    <View className="flex-1 bg-surface">
+    <View className="flex-1 bg-surface" testID='onboarding-screen'>
       <StatusBar style="light" />
 
       {/* Hero image (full-bleed) with centered logo */}
@@ -88,7 +88,7 @@ export default function OnboardingScreen() {
           onMomentumScrollEnd={handleScrollEnd}
         >
           {slides.map((slide, i) => (
-            <View key={`slide-${i}`} style={{ width }} className="items-center justify-center px-5 gap-[12] mb-12">
+            <View key={`slide-${i}`} style={{ width }} className="items-center justify-center px-5 gap-item mb-12">
               <ThemeText variant="h1" weight="bold" color="onSurface" align="center" uppercase className="mt-6">
                 {slide.title}
               </ThemeText>
@@ -101,11 +101,12 @@ export default function OnboardingScreen() {
       </View>
 
       {/* CTA */}
-      <View className="px-[20] pb-[80] gap-[24]">
+      <View className="px-screen pb-20 gap-section">
         <Pressable
-          onPress={() => navigation.navigate('Login' as never)}
+          onPress={() => navigation.navigate('App' as never)}
           className="mt-2 w-full rounded-[8] bg-black px-4 h-[44] items-center justify-center"
           accessibilityRole="button"
+          testID="onboarding-get-started-button"
         >
           <ThemeText variant="button" weight="medium" align="center" className="text-white">
             Get Started
