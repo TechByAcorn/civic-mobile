@@ -3,7 +3,8 @@
   "compilerOptions": {
     "strict": true,
     "types": [
-      "nativewind/types"
+      "nativewind/types",
+      "jest"
     ],
     "baseUrl": ".",
     "paths": {
@@ -15,6 +16,9 @@
   "include": [
     "src",
     "App.tsx",
-    "nativewind-env.d.ts"
+    "nativewind-env.d.ts",
+    "jest",
+    "src/**/*.test.tsx",
+    "src/**/*.test.ts"
   ]
 }

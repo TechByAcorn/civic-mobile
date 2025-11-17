@@ -1,15 +1,40 @@
-import React from 'react';
-import { View, Button } from 'react-native';
-import { ThemeText } from '../../components/ui/ThemeText';
-import { useNavigation } from '@react-navigation/native';
+import React, { useState } from 'react';
+import { useAppStore } from '@/store/useAppStore';
+import NameStep, { NameValues } from './profile-creation/components/NameStep';
+import CategorySelectStep from './profile-creation/components/CategorySelectStep';
 
 export default function ProfileCreationScreen() {
-  const navigation = useNavigation();
+  const setAuthenticated = useAppStore((s) => s.setAuthenticated);
+
+  const [step, setStep] = useState<0 | 1>(0);
+  const [nameValues, setNameValues] = useState<NameValues | undefined>(undefined);
+  const [selectedCategoryIds, setSelectedCategoryIds] = useState<string[]>([]);
+
+  const handleNameContinue = (values: NameValues) => {
+    setNameValues(values);
+    setStep(1);
+  };
+
+  const completeProfileCreation = (finalCategoryIds: string[]) => {
+    setSelectedCategoryIds(finalCategoryIds);
+    // TODO: Persist profile to backend or local storage as needed
+    setAuthenticated(true);
+  };
+
+  const skipProfileCreation = () => {
+    // Allow user to enter app without completing selection
+    setAuthenticated(true);
+  };
+
+  if (step === 0) {
+    return <NameStep initialValues={nameValues} onContinue={handleNameContinue} />;
+  }
+
   return (
-    <View style={{ flex: 1 }} className="items-center justify-center bg-white dark:bg-neutral-900 p-6">
-      <ThemeText variant="h2" weight="semibold" color="onSurface">Create your profile</ThemeText>
-      <ThemeText variant="body" color="muted" className="mt-2">We will collect a few details to personalize your experience.</ThemeText>
-      <Button title="Back to Login" onPress={() => navigation.navigate('Login' as never)} />
-    </View>
+    <CategorySelectStep
+      initialSelectedIds={selectedCategoryIds}
+      onContinue={completeProfileCreation}
+      onSkip={skipProfileCreation}
+    />
   );
 }

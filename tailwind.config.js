@@ -23,12 +23,30 @@ module.exports = {
         // Figma Body / Label size 14 with 150% leading
         label: ['14px', { lineHeight: '21px' }],
       },
+      // Semantic spacing tokens for consistent layout across the app
+      spacing: {
+        screen: '20px',      // horizontal screen padding
+        section: '24px',     // vertical section spacing
+        sectionLg: '32px',   // larger section spacing
+        item: '12px',        // gaps between small items
+        label: '6px',        // label/helper spacing
+        input: '44px',       // input height
+        tiny: '4px',
+        medium: '8px',
+        container: '16px',
+      },
       colors: {
         primary: {
           DEFAULT: '#af0604',
         },
+        brandPrimary: {
+          DEFAULT: "#D72638"
+        },
         surface: {
           DEFAULT: '#FBF7F3',
+        },
+        accentPrimary: {
+          DEFAULT: "#EEB027"
         },
         accentBackground: {
           DEFAULT: "#6ED5B8"
@@ -38,6 +56,9 @@ module.exports = {
         },
         disabled: {
           DEFAULT: "#BFBFBF"
+        },
+        disabledPrimary: {
+          DEFAULT: "#8C8C8C"
         },
         muted: {
           DEFAULT: '#D9D9D9',
@@ -55,8 +76,17 @@ module.exports = {
         "text-white": {
           DEFAULT: "#FFF"
         },
+        inputBorder: {
+          DEFAULT: "#D0D0D1",
+        },
         border: {
           DEFAULT: "#E6E6E7"
+        },
+        negativeSecondary: {
+          DEFAULT: "#FFE4E9"
+        },
+        negativePrimary: {
+          DEFAULT: "#BE124E",
         }
       },
     },

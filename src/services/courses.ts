@@ -1,4 +1,5 @@
 import { useQuery, UseQueryResult } from '@tanstack/react-query';
+import { Platform } from 'react-native';
 
 export type ListType = 'recommended' | 'trending' | 'new';
 
@@ -11,31 +12,63 @@ export interface Course {
   rating?: number;
 }
 
+// Server data shape coming from json-server
+type ServerCourse = {
+  id: string;
+  title: string;
+  category: string;
+  description?: string;
+  rating?: number;
+  duration?: number; // minutes
+  slidesCount?: number; // modules
+};
+
+// Resolve correct base URL for iOS simulator and Android emulator
+// Allow override via EXPO_PUBLIC_API_BASE for physical devices or custom hosts
+// Avoid direct reference to `process` to prevent TS type errors in React Native projects
+const envApiBase: string | undefined =
+  typeof (globalThis as any).process !== 'undefined' &&
+  (globalThis as any).process?.env?.EXPO_PUBLIC_API_BASE
+    ? ((globalThis as any).process.env.EXPO_PUBLIC_API_BASE as string)
+    : undefined;
+
+const API_BASE = envApiBase ?? Platform.select({
+  ios: 'http://localhost:3001',
+  android: 'http://10.0.2.2:3001',
+  default: 'http://localhost:3001',
+});
+
 // Centralized query keys for courses
 export const coursesKeys = {
   all: ['courses'] as const,
   list: (type: ListType) => ['courses', 'list', type] as const,
+  detail: (id: string) => ['courses', 'detail', id] as const,
 };
 
-// Simulated API call (replace with real fetch as needed)
+// Fetch courses from mock API and map to UI shape
 async function fetchCourses(type: ListType): Promise<Course[]> {
-  // Simulate network latency
-  await new Promise((res) => setTimeout(res, 400));
+  const res = await fetch(`${API_BASE}/courses`);
+  if (!res.ok) {
+    throw new Error('Failed to fetch courses');
+  }
 
-  const base: Course[] = [
-    { id: 'c-101', title: 'Financial Literacy Basics', category: 'Finance', duration: '45 - 60 Mins', modules: 5, rating: 4.7 },
-    { id: 'c-102', title: 'Leadership Essentials', category: 'Leadership', duration: '30 - 45 Mins', modules: 4, rating: 4.5 },
-    { id: 'c-103', title: 'Community Engagement 101', category: 'Civics', duration: '60 - 75 Mins', modules: 6, rating: 4.8 },
-    { id: 'c-104', title: 'Budgeting for Beginners', category: 'Finance', duration: '20 - 30 Mins', modules: 3, rating: 4.4 },
-  ];
+  const data: ServerCourse[] = await res.json();
+  const mapped: Course[] = data.map((c) => ({
+    id: c.id,
+    title: c.title,
+    category: c.category,
+    duration: typeof c.duration === 'number' ? `${c.duration} Mins` : '30 - 45 Mins',
+    modules: c.slidesCount,
+    rating: c.rating,
+  }));
 
   switch (type) {
     case 'recommended':
-      return base.slice(0, 3);
+      return mapped.slice(0, Math.min(3, mapped.length));
     case 'trending':
-      return base.slice(1, 4);
+      return mapped.slice(1, Math.min(4, mapped.length));
     case 'new':
-      return base;
+      return mapped;
   }
 }
 
@@ -44,5 +77,34 @@ export function useCourses(type: ListType): UseQueryResult<Course[], Error> {
     queryKey: coursesKeys.list(type),
     queryFn: () => fetchCourses(type),
     staleTime: 60_000, // cache for 1 minute
+  });
+}
+
+// Fetch single course by id from mock API
+async function fetchCourseById(courseId: string): Promise<Course | undefined> {
+  const res = await fetch(`${API_BASE}/courses/${courseId}`);
+  if (res.status === 404) {
+    return undefined;
+  }
+  if (!res.ok) {
+    throw new Error('Failed to fetch course');
+  }
+
+  const c: ServerCourse = await res.json();
+  return {
+    id: c.id,
+    title: c.title,
+    category: c.category,
+    duration: typeof c.duration === 'number' ? `${c.duration} Mins` : '30 - 45 Mins',
+    modules: c.slidesCount,
+    rating: c.rating,
+  };
+}
+
+export function useCourse(courseId: string): UseQueryResult<Course | undefined, Error> {
+  return useQuery({
+    queryKey: coursesKeys.detail(courseId),
+    queryFn: () => fetchCourseById(courseId),
+    staleTime: 60_000,
   });
 }

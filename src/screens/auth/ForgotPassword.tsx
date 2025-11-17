@@ -1,74 +1,116 @@
 import React, { useMemo, useState } from 'react';
-import { Linking, Pressable, TextInput, View } from 'react-native';
+import { Image, Linking, Pressable, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
 import { ThemeText } from '../../components/ui/ThemeText';
 import { useNavigation } from '@react-navigation/native';
-import { Ionicons } from '@expo/vector-icons';
 import { useAppStore } from '../../store/useAppStore';
+import AppBar from '@/components/ui/AppBar';
+import { CloseIcon, DropdownArrowIcon } from '@/components/ui/Icon';
+import ThemeInput from '@/components/ui/ThemeInput';
+import ThemeButton from '@/components/ui/ThemeButton';
+import type { NavigationProp } from '@react-navigation/native';
+import type { AuthStackParamList } from '@/@types/navigation';
 
 export default function ForgotPasswordScreen() {
-  const navigation = useNavigation();
-  const theme = useAppStore((s) => s.theme);
+  const navigation = useNavigation<NavigationProp<AuthStackParamList>>();
 
+  const [useMobile, setUseMobile] = useState(false);
   const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
+
   const isValidEmail = useMemo(() => /.+@.+\..+/.test(email.trim()), [email]);
+  const isValidPhone = useMemo(() => /^[0-9]{6,}$/.test(phone.trim()), [phone]);
 
   const onSubmit = () => {
+    if (useMobile) {
+      if (!isValidPhone) return;
+      navigation.navigate('VerifyOtp', { email: undefined });
+      return;
+    }
     if (!isValidEmail) return;
-    // TODO: call backend API to send reset link
-    navigation.navigate('Login' as never);
+    navigation.navigate('VerifyOtp', { email });
   };
 
   return (
-    <SafeAreaView style={{ flex: 1 }} className="bg-neutral-50 dark:bg-neutral-900">
-      <StatusBar style={theme === 'dark' ? 'light' : 'dark'} />
+    <SafeAreaView style={{ flex: 1 }} className="bg-surface">
+      <StatusBar style={'dark'} />
 
       {/* Top bar */}
-      <View className="flex-row items-center justify-between px-4 pt-1">
-        <Pressable accessibilityRole="button" onPress={() => navigation.goBack()} className="h-10 w-10 items-center justify-center">
-          <Ionicons name="chevron-back" size={24} color={theme === 'dark' ? '#FFFFFF' : '#000000'} />
-        </Pressable>
-        <Pressable accessibilityRole="button" onPress={() => Linking.openURL('mailto:support@example.com')}>
-          <ThemeText variant="body" weight="medium" className="text-primary">Support</ThemeText>
-        </Pressable>
-      </View>
+      <AppBar 
+        showBorder={false}
+        backgroundColor={'bg-surface'}
+        backComponent={<CloseIcon />}
+        rightComponent={
+          <Pressable accessibilityRole="button" onPress={() => Linking.openURL('mailto:support@example.com')}>
+            <ThemeText variant="body" weight="bold" color="primary">
+              Get help?
+            </ThemeText>
+          </Pressable>
+        }
+      />
 
-      {/* Content */}
-      <View className="flex-1 px-4">
-        <View className="mt-2 items-center">
-          <ThemeText variant="h2" weight="semibold" color="onSurface" className="text-center">Reset your password</ThemeText>
-          <ThemeText variant="body" color="text-secondary" className="mt-2 text-center">
-            Enter your email to receive a reset link.
+      <View className="flex-1 px-screen">
+        <Image source={require("assets/images/forgot-password-icon.png")} className='w-[80] h-[80] mx-auto mb-item' />
+        <View className="gap-item items-center mb-section">
+          <ThemeText variant="h3" weight="bold" className="text-center">
+            FORGOT PASSWORD?
+          </ThemeText>
+          <ThemeText variant="body" color="text-secondary" className="text-center">
+            {useMobile ? (
+              <>Please enter your <ThemeText variant="body" weight="bold">phone number</ThemeText> and we’ll send a OTP code to reset password.</>
+            ) : (
+              <>Please enter your <ThemeText variant="body" weight="bold">email address</ThemeText> and we’ll send a OTP code to reset password.</>
+            )}
           </ThemeText>
         </View>
 
         {/* Form */}
-        <View className="mt-6 gap-4">
-          <View>
-            <ThemeText variant="body" weight="medium" color="onSurface" className="mb-2">Email</ThemeText>
-            <TextInput
-              value={email}
-              onChangeText={setEmail}
-              placeholder="you@email.io"
-              placeholderTextColor={theme === 'dark' ? '#A3A3A3' : '#9CA3AF'}
-              keyboardType="email-address"
-              autoCapitalize="none"
-              className="h-11 rounded-lg border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-800 px-3 text-[16px] font-body"
-            />
+        <View className="mt-6">
+          <View className='mb-section'>
+            {useMobile ? (
+              <ThemeInput
+                label="Phone number"
+                value={phone}
+                onChangeText={setPhone}
+                keyboardType="phone-pad"
+                autoCapitalize="none"
+                autoFocus
+                helperText={!isValidPhone && phone ? 'Please enter a valid mobile number' : undefined}
+                testID="forgot-phone-input"
+                leftPaddingClassName='pl-[60px]'
+                leftComponent={
+                  <View className="flex-row items-center px-medium">
+                    <ThemeText variant="body">US</ThemeText>
+                    <DropdownArrowIcon />
+                  </View>
+                }
+              />
+            ) : (
+              <ThemeInput
+                label="Email"
+                value={email}
+                onChangeText={setEmail}
+                keyboardType="email-address"
+                autoCapitalize="none"
+                autoFocus
+                helperText={!isValidEmail && email ? 'Please enter a valid email' : undefined}
+                testID="forgot-email-input"
+              />
+            )}
           </View>
 
-          <Pressable
-            accessibilityRole="button"
+          <ThemeButton
+            label="Send OTP code"
             onPress={onSubmit}
-            disabled={!isValidEmail}
-            className={`mt-3 h-11 rounded-lg items-center justify-center ${isValidEmail ? 'bg-black dark:bg-white' : 'bg-neutral-300 dark:bg-neutral-700'}`}
-          >
-            <ThemeText variant="button" weight="medium" className={isValidEmail ? 'text-white dark:text-black' : 'text-white dark:text-neutral-300'}>Send reset link</ThemeText>
-          </Pressable>
+            disabled={useMobile ? !isValidPhone : !isValidEmail}
+            testID="send-reset-button"
+          />
 
-          <Pressable onPress={() => navigation.navigate('Login' as never)} className="items-center mt-3">
-            <ThemeText variant="body" weight="medium" className="text-primary">Back to Login</ThemeText>
+          <Pressable onPress={() => setUseMobile((prev) => !prev)} className="items-center mt-section">
+            <ThemeText variant="label" weight="bold" className="text-primary">
+              {useMobile ? 'Use email address instead' : 'Use mobile number instead'}
+            </ThemeText>
           </Pressable>
         </View>
       </View>
