@@ -5,8 +5,7 @@ import { StatusBar } from 'expo-status-bar';
 import { LinearGradient } from 'expo-linear-gradient';
 import { ThemeText } from '@/components/ui/ThemeText';
 import ThemeButton from '@/components/ui/ThemeButton';
-import GradientOverlay from '@/components/ui/GradientOverlay';
-import { BackIcon, RatingIcon } from '@/components/ui/Icon';
+import { BackIcon, RatingIcon, SuccessIcon, TrophyIcon } from '@/components/ui/Icon';
 import { useCourse } from '@/services/courses';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import SegmentedTabs from '../../components/ui/SegmentedTabs';
@@ -16,6 +15,8 @@ import InstructorSection from './sections/InstructorSection';
 import ReviewsSection from './sections/ReviewsSection';
 import type { RootStackParamList } from '@/@types/navigation';
 import type { NavigationProp } from '@react-navigation/native';
+import CourseModal from '@/components/Course/CourseModal';
+import ProgressBar from '@/components/ui/ProgressBar';
 
 type RouteParams = RootStackParamList['Course-Details-Screen'];
 
@@ -39,6 +40,9 @@ const CourseDetailsScreen: React.FC = () => {
   // Banner image has fixed height
   const HERO_HEIGHT = 350;
   const [appBarContentHeight, setAppBarContentHeight] = useState(0);
+  const [enrollLoading, setEnrollLoading] = useState(false);
+  const [isEnrolledModal, setIsEnrolledModal] = useState(false);
+  const [isEnrolled, setIsEnrolled] = useState(false);
 
   // Animated values for AppBar appearance
   const appBarOpacity = useRef(new Animated.Value(0)).current;
@@ -86,6 +90,18 @@ const CourseDetailsScreen: React.FC = () => {
         </Pressable>
       </View>
     );
+  }
+
+  const onEnrollToGetStart = () => {
+    let isAuth = true;
+
+    if (isAuth) {
+      setEnrollLoading(true);
+      setTimeout(() => {
+        setIsEnrolledModal(true);
+        setEnrollLoading(false);
+      }, 1000);
+    }
   }
 
   return (
@@ -195,23 +211,61 @@ const CourseDetailsScreen: React.FC = () => {
         </View>
       </ScrollView>
 
-      {/* Bottom CTA bar (unchanged) */}
-      <View className="px-screen h-[100] pt-[16] border-t border-t-border flex-row justify-between">
-        <View className='flex-1 gap-tiny'>
-          <ThemeText variant='caption' color="text-secondary">Course Fee:</ThemeText>
-          <ThemeText variant='h4'>Free</ThemeText>
-        </View>
-        <View className='flex-1'>
+
+      <CourseModal
+        visible={isEnrolledModal}
+        onClose={() => setIsEnrolledModal(!isEnrolledModal)}
+        icon={<SuccessIcon />}
+        title={`Success! You’re in.\nLet’s start learning.`}
+        content={`You now have lifetime access to ${course?.title}. Start the 30-min lessons in the first module and earn your certificate when you’re done.`}
+        actionContainer={
           <ThemeButton
-            label="Enroll to Get Started"
-            onPress={() => navigation.navigate("Lesson-Details-Screen", {
-              title: course.title,
-              type: 'video',
-              duration: '10:00',
-            })}
-            testID="start-course-button"
+            variant='outline'
+            label="Continue to Lessons"
+            onPress={() => {
+              setIsEnrolledModal(false);
+              setIsEnrolled(true);
+            }}
+            testID="continue-to-lesson-button"
           />
-        </View>
+        }
+      />
+
+      <View className="px-screen border-t border-t-border">
+        {isEnrolled ? (
+          <View className='pb-sectionLg h-[150]'>
+            <View className='mb-container'>
+              <ProgressBar value={0} rightIcon={<TrophyIcon />} />
+            </View>
+
+            <View className='flex-1'>
+              <ThemeButton
+                label="Start Lessons"
+                onPress={() => navigation.navigate("Lesson-Details-Screen", {
+                  title: course.title,
+                  type: 'video',
+                  duration: '10:00',
+                })}
+                testID="start-lesson-button"
+              />
+            </View>
+          </View>
+        ) : (
+          <View className='h-[100] pt-[16] flex-row justify-between'>
+            <View className='flex-1 gap-tiny'>
+              <ThemeText variant='caption' color="text-secondary">Course Fee:</ThemeText>
+              <ThemeText variant='h4'>Free</ThemeText>
+            </View>
+            <View className='flex-1'>
+              <ThemeButton
+                label="Enroll to Get Started"
+                isLoading={enrollLoading}
+                onPress={onEnrollToGetStart}
+                testID="start-course-button"
+              />
+            </View>
+          </View>
+        )}
       </View>
     </View>
   );
