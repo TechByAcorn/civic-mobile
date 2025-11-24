@@ -1,11 +1,13 @@
 import React, { useCallback } from 'react';
-import { View, Pressable } from 'react-native';
+import { View, Pressable, Dimensions } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { ThemeText } from './ThemeText';
+import { ThemeText, ThemeTextProps } from './ThemeText';
 import { BackIcon } from './Icon';
 
 export interface AppBarProps {
   title?: string;
+  titleColor?: ThemeTextProps['color'];
+  subtitleComponent?: React.ReactElement;
   backComponent?: React.ReactElement;
   onBackPress?: () => void;
   leftComponent?: React.ReactElement;
@@ -16,8 +18,13 @@ export interface AppBarProps {
   showBorder?: boolean;
 }
 
+const DEVICE_WIDTH = Dimensions.get("window").width;
+const APP_BAR_TITLE_WIDTH = DEVICE_WIDTH - 156; // left: 60 + right: 60 + spaces between left & right component: 18 x 2 = 36
+
 const AppBar: React.FC<AppBarProps> = ({
   title,
+  titleColor,
+  subtitleComponent,
   backComponent,
   onBackPress,
   leftComponent,
@@ -28,7 +35,6 @@ const AppBar: React.FC<AppBarProps> = ({
   showBorder = true,
 }) => {
   const navigation = useNavigation();
-
   const handleBack = useCallback(() => {
     try {
       const explicitHandler = onLeftPress ?? onBackPress;
@@ -74,10 +80,17 @@ const AppBar: React.FC<AppBarProps> = ({
       {/* Center: Title (optional) */}
       <View className="absolute left-0 right-0 h-full items-center justify-center">
         {title ? (
-          <ThemeText variant="h4" weight="bold" color="text-primary">
+          <ThemeText
+            variant="h4"
+            weight="bold"
+            color={titleColor ? titleColor : "text-primary"}
+            numberOfLines={1}
+            style={{ width: APP_BAR_TITLE_WIDTH }}
+          >
             {title}
           </ThemeText>
         ) : null}
+        {subtitleComponent && subtitleComponent}
       </View>
 
       {/* Right: Custom */}
