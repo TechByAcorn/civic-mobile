@@ -42,7 +42,7 @@ const weightClasses: Record<NonNullable<ThemeTextProps['weight']>, string> = {
 
 const colorClasses: Record<NonNullable<ThemeTextProps['color']>, string> = {
   primary: 'text-primary',
-  onSurface: 'text-onSurface',
+  onSurface: 'text-text-primary',
   muted: 'text-muted',
   'text-primary': 'text-text-primary',
   'text-secondary': 'text-text-secondary',

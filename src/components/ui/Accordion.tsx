@@ -1,10 +1,10 @@
 import React from 'react';
 import { View, Pressable, Animated, Easing } from 'react-native';
 import { ThemeText } from './ThemeText';
-import { AddLineIcon, LessonQuizIcon, LessonTextIcon, LessonVideoIcon, LockIcon, SubtractLineIcon, CheckboxCircleIcon } from './Icon';
+import { AddLineIcon, LessonQuizIcon, LessonTextIcon, LessonVideoIcon, LockIcon, SubtractLineIcon, CheckboxCircleIcon, CheckMarkIcon } from './Icon';
 
-export type AccordionLesson = { id: number; title: string, type: "video" | "text" | "quiz", duration: string };
-export type AccordionItem = { id: string | number; title: string; lessons: AccordionLesson[] };
+export type AccordionLesson = { id: number; title: string, type: "video" | "text" | "quiz", duration: string, isUnlock?: boolean };
+export type AccordionItem = { id: string | number; title: string; lessons: AccordionLesson[]; isUnlock?: boolean; isCompleted?: boolean };
 
 type AccordionProps = {
   items: AccordionItem[];
@@ -19,7 +19,6 @@ type AccordionItemRowProps = {
   onToggle: () => void;
 };
 
-// Refactor: remove React.memo wrapping to avoid runtime error (displayName of undefined)
 const AccordionItemRow: React.FC<AccordionItemRowProps> = ({ item, index, isOpen, onToggle }) => {
   const animated = React.useRef(new Animated.Value(isOpen ? 1 : 0)).current;
   const [contentHeight, setContentHeight] = React.useState(0);
@@ -74,7 +73,14 @@ const AccordionItemRow: React.FC<AccordionItemRowProps> = ({ item, index, isOpen
         className={`p-container flex-row items-center justify-between border-b ${isOpen ? 'border-inputBorder' : 'border-transparent'}`}
         testID={`accordion-item-header-${item.id}`}
       >
-        <ThemeText variant="label" weight="bold">{`${index + 1}. ${item.title}`}</ThemeText>
+        <View>
+          <ThemeText variant="label" weight="bold">{`${index + 1}. ${item.title}`}</ThemeText>
+          {item?.isUnlock && item?.isCompleted && (
+            <View className='self-start mt-medium bg-positiveBackground py-tiny px-medium rounded-full'>
+              <ThemeText variant='caption' weight='medium' color="text-white">Module {index + 1}: Completed</ThemeText>
+            </View>
+          )}
+        </View>
         {isOpen ? <SubtractLineIcon /> : <AddLineIcon />}
       </Pressable>
 
@@ -98,12 +104,15 @@ const AccordionItemRow: React.FC<AccordionItemRowProps> = ({ item, index, isOpen
         </View>
       ) : null}
 
-      {/* Animated content container */}
       <Animated.View style={containerStyle} className="overflow-hidden" testID={`accordion-lessons-${item.id}`}>
         <Animated.View style={contentOpacity} className="py-medium">
           {item.lessons.map((lesson, lessonIndex) => (
             <View key={`${item.id}-${lesson.id}`} className="h-[53] p-container flex-row items-center">
-              <View children={(index === 0 && lessonIndex === 0) ? <CheckboxCircleIcon /> : <LockIcon />} className='mr-item' />
+              {item?.isCompleted && item?.isUnlock ? (
+                <View children={<CheckMarkIcon {...{ width: 20, height: 20 }} />} className='mr-item' />
+              ) : (
+                <View children={(index === 0 && lessonIndex === 0) ? <CheckboxCircleIcon /> : <LockIcon />} className='mr-item' />
+              )}
               <View className='flex-1 flex-row items-center gap-medium'>
                 {renderLessonType(lesson?.type)}
                 <ThemeText variant="label" weight='medium'>{lesson.title}</ThemeText>

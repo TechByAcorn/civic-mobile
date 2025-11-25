@@ -33,10 +33,12 @@ import SettingNotificationScreen from '@/screens/setting/Notification';
 import { NotificationToast } from '@/components/ui/Toast';
 import { ToastConfigParams } from 'toastify-react-native/utils/interfaces';
 import EditProfileScreen from '@/screens/setting/profile/Edit';
+import LearningRoot from '@/screens/H5P/Root';
+import type { TabsParamList, RootStackParamList, AuthStackParamList } from '@/@types/navigation';
 
-const Stack = createNativeStackNavigator();
-const RootStack = createNativeStackNavigator();
-const Tab = createBottomTabNavigator();
+const Stack = createNativeStackNavigator<AuthStackParamList>();
+const RootStack = createNativeStackNavigator<RootStackParamList>();
+const Tab = createBottomTabNavigator<TabsParamList>();
 const MainStack = createNativeStackNavigator();
 
 function TabsNavigator() {
@@ -90,7 +92,7 @@ function RootNavigator() {
       <RootStack.Screen name="Tabs" component={TabsNavigator} />
       <RootStack.Screen name="Course-List-Screen" component={CourseListScreen} />
       <RootStack.Screen name="Course-Details-Screen" component={CourseDetailsScreen} />
-      <RootStack.Screen name="Lesson-Details-Screen" component={LessonDetailsScreen} />
+      <RootStack.Screen name="Lesson-Details-Screen" component={LessonDetailsScreen} options={{ animation: "fade" }} />
       <RootStack.Screen name="Lesson-Completed-Screen" component={LessonCompletedScreen} />
       <RootStack.Screen name="Course-Completed-Screen" component={CourseCompletedScreen} />
       <RootStack.Screen name="Setting-Root-Screen" component={SettingRootScreen} />
@@ -102,6 +104,7 @@ function RootNavigator() {
       <RootStack.Screen name="Setting-Notification-Screen" component={SettingNotificationScreen} />
       <RootStack.Screen name="Edit-Profile-Screen" component={EditProfileScreen} />
       <RootStack.Screen name="Setting-Verify-OTP-Screen" component={VerifyOtpScreen} />
+      <RootStack.Screen name="Learning-Root-Screen" component={LearningRoot} options={{ animation: "fade_from_bottom" }} />
     </RootStack.Navigator>
   );
 }
