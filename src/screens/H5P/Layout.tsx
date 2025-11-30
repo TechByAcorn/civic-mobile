@@ -14,6 +14,7 @@ import AppBar from "@/components/ui/AppBar";
 import { TouchableOpacity, View } from "react-native";
 import ThemeButton from "@/components/ui/ThemeButton";
 import { useNavigation } from "@react-navigation/native";
+import H5PTrueFalse from "./H5PTrueFalse";
 
 const H5PLayout = () => {
   const navigation = useNavigation();
@@ -66,14 +67,7 @@ const H5PLayout = () => {
           <LearningTrophyIcon />
         </View>
       </View>
-      <View className="flex-1 bg-white p-section">
-        <ThemeText variant="h4">
-          Citizens have no responsibility to participate in their government.
-        </ThemeText>
-        <ThemeText variant="label" color="text-secondary" className="mt-container">
-          This statement suggests that individuals are not obligated to engage in governmental processes or civic duties.
-        </ThemeText>
-      </View>
+      <H5PTrueFalse />
 
       <View className="absolute w-full bottom-0 h-[100] bg-darkBlack">
         <View className="px-screen pt-container flex-row items-center justify-between">

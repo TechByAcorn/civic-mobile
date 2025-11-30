@@ -1940,3 +1940,71 @@ export const FullScreenIcon = (props: SvgProps) => (
     />
   </Svg>
 );
+
+export const H5PXCircleIcon = (props: SvgProps) => (
+  <Svg
+    width={33}
+    height={33}
+    viewBox="0 0 33 33"
+    fill="none"
+    {...props}
+  >
+    <G clipPath="url(#clip0_487_8721)">
+      <Path
+        d="M15.3271 28.8349C22.2999 29.3225 28.3478 24.0651 28.8354 17.0923C29.3229 10.1195 24.0656 4.07161 17.0928 3.58403C10.12 3.09644 4.07211 8.35376 3.58452 15.3266C3.09693 22.2994 8.35426 28.3473 15.3271 28.8349Z"
+        fill="#FAFAFA"
+      />
+      <Path
+        d="M20.2624 12.6867L12.1575 19.7322M12.6872 12.157L19.7327 20.2619M28.8354 17.0923C28.3478 24.0651 22.2999 29.3225 15.3271 28.8349C8.35426 28.3473 3.09693 22.2994 3.58452 15.3266C4.07211 8.35376 10.12 3.09644 17.0928 3.58403C24.0656 4.07161 29.3229 10.1195 28.8354 17.0923Z"
+        stroke="#BE124E"
+        strokeWidth={2.8125}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </G>
+    <Defs>
+      <ClipPath id="clip0_487_8721">
+        <Rect
+          width={30.375}
+          height={30.375}
+          fill="white"
+          transform="translate(2.11887) rotate(4)"
+        />
+      </ClipPath>
+    </Defs>
+  </Svg>
+);
+
+export const H5PTickCircleIcon = (props: SvgProps) => (
+  <Svg
+    width={33}
+    height={33}
+    viewBox="0 0 33 33"
+    fill="none"
+    {...props}
+  >
+    <G clipPath="url(#clip0_487_8718)">
+      <Path
+        d="M17.0928 28.8348C24.0656 28.3472 29.3229 22.2993 28.8354 15.3265C28.3478 8.35368 22.2999 3.09635 15.3271 3.58394C8.35425 4.07153 3.09693 10.1194 3.58452 17.0922C4.0721 24.065 10.12 29.3224 17.0928 28.8348Z"
+        fill="#FAFAFA"
+      />
+      <Path
+        d="M10.5285 16.6066L14.581 20.1294L21.6265 12.0245M28.8354 15.3265C29.3229 22.2993 24.0656 28.3472 17.0928 28.8348C10.12 29.3224 4.0721 24.065 3.58452 17.0922C3.09693 10.1194 8.35425 4.07153 15.3271 3.58394C22.2999 3.09635 28.3478 8.35368 28.8354 15.3265Z"
+        stroke="#52A08A"
+        strokeWidth={2.8125}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </G>
+    <Defs>
+      <ClipPath id="clip0_487_8718">
+        <Rect
+          width={30.375}
+          height={30.375}
+          fill="white"
+          transform="translate(0 2.11914) rotate(-4)"
+        />
+      </ClipPath>
+    </Defs>
+  </Svg>
+);
