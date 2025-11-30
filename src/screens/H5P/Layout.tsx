@@ -11,10 +11,12 @@ import {
 import { ThemeText } from "@/components/ui/ThemeText";
 import CourseModal from "@/components/Course/CourseModal";
 import AppBar from "@/components/ui/AppBar";
-import { TouchableOpacity, View } from "react-native";
+import { Pressable, TouchableOpacity, View } from "react-native";
 import ThemeButton from "@/components/ui/ThemeButton";
 import { useNavigation } from "@react-navigation/native";
 import H5PTrueFalse from "./H5PTrueFalse";
+import H5PHelpBox from "./HelpBox";
+import { useH5PStore } from "@/store/useH5PStore";
 
 const H5PLayout = () => {
   const navigation = useNavigation();
@@ -22,7 +24,8 @@ const H5PLayout = () => {
   // const [isEnrolled, setIsEnrolled] = useState(false);
   const [lessonCount, setLessonCount] = useState(1);
 
-  console.log('lessonCount', lessonCount)
+  const { setHelpBoxModal } = useH5PStore();
+
   const isFirstLesson = lessonCount === 1;
 
   const onBackLesson = () => {
@@ -40,6 +43,9 @@ const H5PLayout = () => {
     }
   }, [lessonCount]);
 
+  const onToggleHelpBoxModal = () => {
+    setHelpBoxModal();
+  }
 
   return (
     <View className="flex-1">
@@ -77,9 +83,9 @@ const H5PLayout = () => {
               <LearningSpeakerIcon />
             </View>
 
-            <View className="w-[44] h-[44] bg-white rounded-full items-center justify-center">
+            <Pressable onPress={onToggleHelpBoxModal} className="w-[44] h-[44] bg-white rounded-full items-center justify-center">
               <LearningHelpIcon />
-            </View>
+            </Pressable>
           </View>
 
           <View className="flex-row items-center gap-medium">
@@ -133,6 +139,7 @@ const H5PLayout = () => {
           </View>
         }
       />
+      <H5PHelpBox />
     </View>
   )
 }
