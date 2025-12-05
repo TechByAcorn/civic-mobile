@@ -3,6 +3,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { View } from 'react-native';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { AppProviders } from './src/providers/AppProviders';
 import './global.css';
 import ToastManager, { Toast } from 'toastify-react-native'
@@ -143,12 +144,12 @@ export default function App() {
 
   return (
     <AppProviders>
-      <View className={'flex-1'}>
+      <GestureHandlerRootView style={{ flex: 1 }}>
         <NavigationContainer>
           <MainNavigator />
           <ToastManager config={toastConfig}/>
         </NavigationContainer>
-      </View>
+      </GestureHandlerRootView>
     </AppProviders>
   );
 }
