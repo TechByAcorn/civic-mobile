@@ -13,9 +13,13 @@ import CourseModal from "@/components/Course/CourseModal";
 import AppBar from "@/components/ui/AppBar";
 import { Pressable, TouchableOpacity, View } from "react-native";
 import ThemeButton from "@/components/ui/ThemeButton";
-import { useNavigation } from "@react-navigation/native";
-import H5PTrueFalse from "./H5PTrueFalse";
+import { Toast } from 'toastify-react-native';
 import H5PHelpBox from "./HelpBox";
+
+// H5P Contents
+import H5PTrueFalse from "./H5PTrueFalse";
+
+import { useNavigation } from "@react-navigation/native";
 import { useH5PStore } from "@/store/useH5PStore";
 
 const H5PLayout = () => {
@@ -47,6 +51,10 @@ const H5PLayout = () => {
     setHelpBoxModal();
   }
 
+  const onToggleNarrativeSound = () => {
+     Toast.success('Saved to Photos');
+  }
+
   return (
     <View className="flex-1">
       <AppBar
@@ -73,15 +81,15 @@ const H5PLayout = () => {
           <LearningTrophyIcon />
         </View>
       </View>
-      <H5PTrueFalse />
+      <H5PTrueFalse onContinue={onNextLesson} />
 
       <View className="absolute w-full bottom-0 h-[100] bg-darkBlack">
         <View className="px-screen pt-container flex-row items-center justify-between">
 
           <View className="flex-row items-center gap-container">
-            <View className="w-[44] h-[44] bg-white rounded-full items-center justify-center">
+            <Pressable onPress={onToggleNarrativeSound} className="w-[44] h-[44] bg-white rounded-full items-center justify-center">
               <LearningSpeakerIcon />
-            </View>
+            </Pressable>
 
             <Pressable onPress={onToggleHelpBoxModal} className="w-[44] h-[44] bg-white rounded-full items-center justify-center">
               <LearningHelpIcon />
