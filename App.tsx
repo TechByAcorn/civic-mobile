@@ -2,11 +2,10 @@ import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { View } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { AppProviders } from './src/providers/AppProviders';
 import './global.css';
-import ToastManager, { Toast } from 'toastify-react-native'
+import ToastManager from 'toastify-react-native'
 
 // Screens (we'll keep them where they are for now and import directly)
 import OnboardingScreen from './src/screens/auth/Onboarding';

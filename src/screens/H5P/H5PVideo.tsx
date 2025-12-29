@@ -11,10 +11,8 @@ interface Props {
 
 const H5PVideo: React.FC<Props> = ({ sourceUrl, autoPlay = false, onComplete }) => {
   const videoRef = React.useRef<Video>(null);
-  const [status, setStatus] = React.useState<AVPlaybackStatus | null>(null);
 
   const handleStatusUpdate = (s: AVPlaybackStatus) => {
-    setStatus(s);
     if ('didJustFinish' in s && s.didJustFinish && onComplete) {
       onComplete();
     }
@@ -24,7 +22,14 @@ const H5PVideo: React.FC<Props> = ({ sourceUrl, autoPlay = false, onComplete }) 
 
   return (
     <View className="flex-1 bg-white px-section py-container">
-      <View className="w-full aspect-video bg-black rounded-[12] overflow-hidden">
+      <ThemeText variant="h4">
+        Citizens have no responsibility to participate in their government.
+      </ThemeText>
+      <ThemeText variant="label" color="text-secondary" className="mt-container">
+        This statement suggests that individuals are not obligated to engage in governmental processes or civic duties.
+      </ThemeText>
+
+      <View className="w-full aspect-video bg-black rounded-[12] overflow-hidden mt-[40]">
         <Video
           ref={videoRef}
           source={{ uri }}
@@ -34,12 +39,6 @@ const H5PVideo: React.FC<Props> = ({ sourceUrl, autoPlay = false, onComplete }) 
           shouldPlay={autoPlay}
           onPlaybackStatusUpdate={handleStatusUpdate}
         />
-      </View>
-
-      <View className="mt-medium">
-        <ThemeText variant="label" color="text-secondary">
-          {status && 'positionMillis' in status ? `${Math.floor((status.positionMillis ?? 0) / 1000)}s / ${Math.floor((status.durationMillis ?? 0) / 1000)}s` : 'Loading...'}
-        </ThemeText>
       </View>
     </View>
   );

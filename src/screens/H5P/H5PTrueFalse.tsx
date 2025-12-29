@@ -1,7 +1,7 @@
 import React from "react";
 import { View } from "react-native";
 import { ThemeText } from "@/components/ui/ThemeText";
-import { CheckMarkIcon, CloseIcon, H5PTickCircleIcon, H5PXCircleIcon } from "@/components/ui/Icon";
+import { H5PTickCircleIcon, H5PXCircleIcon } from "@/components/ui/Icon";
 import RipplePressable from "@/components/ui/RipplePressable";
 import ActivitiesCompleted from "@/components/h5p/ActivitiesCompleted";
 
@@ -12,7 +12,7 @@ interface Props {
 const H5PTrueFalse: React.FC<Props> = ({ onContinue }) => {
   const [answered, setAnswered] = React.useState(false);
   const [isCorrect, setIsCorrect] = React.useState<boolean>(false);
-  const explanation = 'In a healthy democracy, citizens share responsibility to participate — voting, staying informed, engaging in community and public processes. Participation strengthens accountability and representation.';
+  const explanation = 'The statement "Citizens have no responsibility to participate in their government" is false. In a democratic society, citizens are encouraged to engage in governmental processes and civic duties, such as voting, attending town hall meetings.';
 
   const handleSelect = (choice: 'true' | 'false') => {
     const correct = choice === 'false';

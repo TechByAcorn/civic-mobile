@@ -21,6 +21,12 @@ import H5PTrueFalse from "./H5PTrueFalse";
 
 import { useNavigation } from "@react-navigation/native";
 import { useH5PStore } from "@/store/useH5PStore";
+import H5PText from "./H5PText";
+import H5PVideo from "./H5PVideo";
+import H5PMarkWord from "./H5PMarkWord";
+import H5PAudio from "./H5PAudio";
+import H5PIFrame from "./H5PIframe";
+import H5PMemoryGame from "./H5PMemoryGame";
 
 const H5PLayout = () => {
   const navigation = useNavigation();
@@ -81,7 +87,13 @@ const H5PLayout = () => {
           <LearningTrophyIcon />
         </View>
       </View>
-      <H5PTrueFalse onContinue={onNextLesson} />
+      {/* <H5PTrueFalse onContinue={onNextLesson} /> */}
+      {/* <H5PText /> */}
+      {/* <H5PVideo /> */}
+      <H5PMarkWord />
+      {/* <H5PAudio /> */}
+      {/* <H5PIFrame /> */}
+      {/* <H5PMemoryGame /> */}
 
       <View className="absolute w-full bottom-0 h-[100] bg-darkBlack">
         <View className="px-screen pt-container flex-row items-center justify-between">
@@ -118,7 +130,6 @@ const H5PLayout = () => {
 
         </View>
       </View>
-
 
       <CourseModal
         visible={moduleCompleteModal}
