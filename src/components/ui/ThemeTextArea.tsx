@@ -60,6 +60,7 @@ const ThemeTextArea: React.FC<ThemeTextAreaProps> = forwardRef<TextInput, ThemeT
             numberOfLines={rows}
             textAlignVertical="top"
             style={[{ minHeight }, style]}
+            placeholderClassName='text-disabledPrimary'
             className={`rounded-[12px] border border-inputBorder bg-white px-3.5 py-3 text-[16px] font-body ${leftPaddingClass} ${inputClassName ?? ''}`}
             {...rest}
           />

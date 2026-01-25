@@ -1,11 +1,12 @@
 import React from 'react';
-import { Pressable, PressableProps } from 'react-native';
+import { ActivityIndicator, Pressable, PressableProps } from 'react-native';
 import { ThemeText } from './ThemeText';
 
 export interface ThemeButtonProps extends Omit<PressableProps, 'children'> {
   label: string;
   className?: string; // nativewind className for container spacing etc.
   testID?: string;
+  isLoading?: boolean;
   variant?: 'solid' | 'outline';
 }
 
@@ -16,6 +17,7 @@ const ThemeButton: React.FC<ThemeButtonProps> = ({
   disabled,
   onPress,
   className,
+  isLoading = false,
   testID = 'theme-button',
   variant = 'solid',
   ...rest
@@ -45,9 +47,13 @@ const ThemeButton: React.FC<ThemeButtonProps> = ({
       className={`${baseClasses} ${stateClasses} ${className ?? ''}`}
       {...rest}
     >
-      <ThemeText variant="button" weight="medium" color={textColor}>
-        {label}
-      </ThemeText>
+      {isLoading
+        ? <ActivityIndicator />
+        : (
+          <ThemeText variant="button" weight="medium" color={textColor}>
+            {label}
+          </ThemeText>
+        )}
     </Pressable>
   );
 };

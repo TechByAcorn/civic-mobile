@@ -1,8 +1,8 @@
 import React, { useEffect, useRef } from 'react';
-import { Modal, View, Pressable, Animated, Dimensions, Easing, TextInput, Platform, Keyboard, Image } from 'react-native';
+import { Modal, View, Pressable, Animated, Dimensions, Easing, TextInput, Platform, Keyboard } from 'react-native';
 import { ThemeText } from '@/components/ui/ThemeText';
 import ThemeButton from '@/components/ui/ThemeButton';
-import { CloseIcon, RatingIcon } from '@/components/ui/Icon';
+import { RatingIcon } from '@/components/ui/Icon';
 import StarRating from 'react-native-star-rating-widget';
 import ThemeTextArea from '../ui/ThemeTextArea';
 
@@ -12,7 +12,6 @@ export interface CourseRatingModalProps {
   rating: number;
   onChange: (value: number) => void;
   onSubmit?: (value: number) => void;
-  title?: string;
 }
 
 const CourseRatingModal: React.FC<CourseRatingModalProps> = ({
@@ -21,7 +20,6 @@ const CourseRatingModal: React.FC<CourseRatingModalProps> = ({
   rating,
   onChange,
   onSubmit,
-  title = 'Rate this course!'
 }) => {
   const SHEET_HEIGHT = Math.round(Dimensions.get('window').height * 0.5);
   const sheetTranslateY = useRef(new Animated.Value(SHEET_HEIGHT)).current;
@@ -116,7 +114,7 @@ const CourseRatingModal: React.FC<CourseRatingModalProps> = ({
       onRequestClose={onClose}
       testID="course-rating-modal"
     >
-      <View style={{ flex: 1 }}>
+      <View style={{ flex: 1, justifyContent: "center" }}>
         {/* Backdrop */}
         <Animated.View
           style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.5)', opacity: overlayOpacity }}
@@ -126,68 +124,38 @@ const CourseRatingModal: React.FC<CourseRatingModalProps> = ({
 
         {/* Bottom sheet */}
         <Animated.View
-          style={{
-            position: 'absolute',
-            left: 0,
-            right: 0,
-            bottom: 0,
-            // height: SHEET_HEIGHT,
-            backgroundColor: 'white',
-            borderTopLeftRadius: 12,
-            borderTopRightRadius: 12,
-            transform: [{ translateY: sheetTranslateY }],
-            shadowColor: '#000',
-            shadowOpacity: 0.12,
-            shadowRadius: 10,
-            shadowOffset: { width: 0, height: -4 },
-            elevation: 10,
-          }}
+          className="p-section mx-screen rounded-[8] bg-white"
           accessibilityLabel="Course rating modal"
           accessibilityViewIsModal={true}
           testID="course-rating-modal-content"
         >
-          <View className='h-[60] px-screen flex-row items-center justify-center'>
-            <Pressable className='absolute left-[20] top-[16]' hitSlop={20} onPress={onClose}>
-              <CloseIcon />
-            </Pressable>
-            <ThemeText variant='h4'>{title}</ThemeText>
+          <View className='px-screen'>
+            <ThemeText variant='h4' weight='bold' align='center'>
+              How would you recommend this course?
+            </ThemeText>
           </View>
-          <View className='bg-surface flex-row items-center py-section px-screen gap-container'>
-            <View className='flex-1 gap-tiny'>
-              <ThemeText variant='label' weight='bold' color='text-primary'>Financial Modeling</ThemeText>
-              <ThemeText variant='caption' color='text-secondary'>
-                A short description of the course which can hold up to
-              </ThemeText>
-            </View>
-            <View className='flex-1'>
-              <Image
-                source={require("assets/images/course-demo-one.png")}
-                className='w-full h-[87] rounded-[4]'
+
+          <View className='mt-item'>
+            <View className='items-center'>
+              <StarRating
+                rating={rating}
+                onChange={onChange}
+                starSize={40}
+                step="full"
+                StarIconComponent={({ size, type }) => (
+                  <RatingIcon width={size} height={size} color={type === 'empty' ? '#BFBFBF' : '#D72638'} />
+                )}
               />
             </View>
-          </View>
-
-          <View className='flex-1 items-center justify-center px-screen' style={{ marginTop: 40 }}>
-            <ThemeText variant='label' className='mb-container'>Tap a star to rate</ThemeText>
-            <StarRating
-              rating={rating}
-              onChange={onChange}
-              enableHalfStar={false}
-              starSize={40}
-              StarIconComponent={({ size, type }) => (
-                <RatingIcon width={size} height={size} color={type === 'empty' ? '#BFBFBF' : '#EEB027'} />
-              )}
-            />
-
-            <View className='flex-row my-sectionLg'>
-              <ThemeTextArea label='Your Review' />
+            
+            <View className='my-sectionLg'>
+              <ThemeTextArea placeholder='write your recommendation here' />
             </View>
           </View>
 
-          {/* Actions */}
-          <View className='px-screen pb-screen gap-container'>
+          <View className='mt-sectionLg'>
             <ThemeButton
-              label='Submit'
+              label='Submit Feedback'
               onPress={handleSubmit}
               disabled={rating <= 0}
               testID='submit-rating-button'

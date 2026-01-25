@@ -43,13 +43,19 @@ module.exports = {
           DEFAULT: "#D72638"
         },
         surface: {
-          DEFAULT: '#FBF7F3',
+          DEFAULT: '#FAFAFA',
         },
         accentPrimary: {
           DEFAULT: "#EEB027"
         },
         accentBackground: {
           DEFAULT: "#6ED5B8"
+        },
+        positiveBackground: {
+          DEFAULT: "#52A08A"
+        },
+        neutralBackground: {
+          DEFAULT: "#FBF7F3"
         },
         neutral: {
           DEFAULT: "#EEEAE0"
@@ -67,6 +73,9 @@ module.exports = {
         black: {
           DEFAULT: "#1F1F1F",
         },
+        darkBlack: {
+          DEFAULT: "#000"
+        },
         "text-primary": {
           DEFAULT: "#141414"
         },
@@ -75,6 +84,9 @@ module.exports = {
         },
         "text-white": {
           DEFAULT: "#FFF"
+        },
+        "text-midWhite": {
+          DEFAULT: "#FAFAFA"
         },
         inputBorder: {
           DEFAULT: "#D0D0D1",
