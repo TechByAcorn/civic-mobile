@@ -19,6 +19,7 @@ import ProfileScreen from './src/screens/tabs/Profile';
 import CourseListScreen from './src/screens/courses/CourseList';
 import CourseDetailsScreen from './src/screens/courses/CourseDetails';
 import LessonDetailsScreen from './src/screens/lessons/LessonDetails';
+import SearchScreen from './src/screens/search/SearchScreen';
 import { TabActiveBookShelfIcon, TabActiveHomeIcon, TabActiveProfileIcon, TabBookShelfIcon, TabHomeIcon, TabProfileIcon } from '@/components/ui/Icon';
 import { ThemeText } from '@/components/ui/ThemeText';
 import LessonCompletedScreen from '@/screens/lessons/LessonCompleted';
@@ -90,6 +91,7 @@ function RootNavigator() {
   return (
     <RootStack.Navigator screenOptions={{ headerShown: false }}>
       <RootStack.Screen name="Tabs" component={TabsNavigator} />
+      <RootStack.Screen name="Search-Screen" component={SearchScreen} />
       <RootStack.Screen name="Course-List-Screen" component={CourseListScreen} />
       <RootStack.Screen name="Course-Details-Screen" component={CourseDetailsScreen} />
       <RootStack.Screen name="Lesson-Details-Screen" component={LessonDetailsScreen} options={{ animation: "fade" }} />

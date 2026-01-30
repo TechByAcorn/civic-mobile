@@ -58,6 +58,11 @@ export default function HomeScreen() {
     [navigation]
   );
 
+  const goToSearch = useCallback(
+    () => navigation.navigate("Search-Screen"),
+    [navigation]
+  );
+
   const goToRecommended = useCallback(() => {
     navigation.navigate("Course-List-Screen", {
       listType: "recommended",
@@ -115,7 +120,7 @@ export default function HomeScreen() {
               Hi, Jame
             </ThemeText>
             <View className="flex-row items-center gap-6">
-              <Pressable accessibilityRole="button" onPress={goToCourses} testID="home-search-button">
+              <Pressable accessibilityRole="button" onPress={goToSearch} testID="home-search-button">
                 <SearchIcon />
               </Pressable>
               <Pressable accessibilityRole="button">

@@ -24,7 +24,7 @@ export type RootStackParamList = {
   "Setting-Notification-Screen": undefined;
   "Edit-Profile-Screen": undefined;
   "Setting-Verify-OTP-Screen": { email?: string; phone?: string } | undefined;
-
+  "Search-Screen": undefined;
   "Learning-Root-Screen": undefined;
 };
 
