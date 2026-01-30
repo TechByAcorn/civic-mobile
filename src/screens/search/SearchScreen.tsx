@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { View, FlatList, ListRenderItemInfo, Pressable, ActivityIndicator, Image } from 'react-native';
 import { ThemeText } from '../../components/ui/ThemeText';
 import ThemeInput from '../../components/ui/ThemeInput';
@@ -81,7 +81,7 @@ const SearchResultCard: React.FC<{ item: SearchResult; onPress: (id: string) => 
           <View className="absolute top-[6] right-[6] flex-row items-center gap-[4] bg-white border border-border px-[4] py-[2] rounded-[4]">
             <RatingIcon />
             <ThemeText variant="caption" weight="medium">
-              4.7
+              {typeof item.rating === 'number' ? item.rating.toFixed(1) : '4.7'}
             </ThemeText>
           </View>
         </View>
@@ -91,13 +91,13 @@ const SearchResultCard: React.FC<{ item: SearchResult; onPress: (id: string) => 
         <View className="flex-row items-center gap-[8]">
           <DurationIcon />
           <ThemeText variant="caption" color="text-secondary">
-            30 - 45 Mins
+            {item.duration || '30 - 45 Mins'}
           </ThemeText>
         </View>
         <View className="flex-row items-center gap-[8]">
           <SlideShowIcon />
           <ThemeText variant="caption" color="text-secondary">
-            5 Modules
+            {typeof item.modules === 'number' ? `${item.modules} Modules` : '5 Modules'}
           </ThemeText>
         </View>
       </View>
@@ -122,14 +122,27 @@ const SearchScreen: React.FC = () => {
   const navigation = useNavigation();
   const insets = useSafeAreaInsets();
   const [searchQuery, setSearchQuery] = useState('');
+  const [debouncedQuery, setDebouncedQuery] = useState('');
 
-  const { data, isLoading, isError, refetch } = useSearch(searchQuery);
+  // Debounce search query to avoid excessive API calls
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedQuery(searchQuery);
+    }, 300);
 
-  const onCardPress = useCallback((id: string) => {
-    // Navigate to Course Details screen
-    // @ts-ignore - Root navigator handles this route
-    (navigation as any).navigate('Course-Details-Screen', { courseId: id });
-  }, []);
+    return () => clearTimeout(timer);
+  }, [searchQuery]);
+
+  const { data, isLoading, isError, refetch } = useSearch(debouncedQuery);
+
+  const onCardPress = useCallback(
+    (id: string) => {
+      // Navigate to Course Details screen
+      // @ts-ignore - Root navigator handles this route
+      (navigation as any).navigate('Course-Details-Screen', { courseId: id });
+    },
+    [navigation]
+  );
 
   const handleClearSearch = useCallback(() => {
     setSearchQuery('');
@@ -159,8 +172,12 @@ const SearchScreen: React.FC = () => {
       );
     }
 
-    if (!searchQuery.trim() || (data && data.length === 0)) {
-      return <EmptyState query={searchQuery} />;
+    if (!debouncedQuery.trim()) {
+      return <EmptyState query={debouncedQuery} />;
+    }
+
+    if (data && data.length === 0) {
+      return <EmptyState query={debouncedQuery} />;
     }
 
     return (

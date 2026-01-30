@@ -7,6 +7,9 @@ export interface SearchResult {
   category: string;
   type: 'course' | 'lesson' | 'article';
   description?: string;
+  rating?: number;
+  duration?: string;
+  modules?: number;
 }
 
 // Server data shape
@@ -16,6 +19,9 @@ type ServerSearchResult = {
   category: string;
   description?: string;
   type?: string;
+  rating?: number;
+  duration?: number; // minutes
+  slidesCount?: number; // modules
 };
 
 // Resolve correct base URL for iOS simulator and Android emulator
@@ -66,6 +72,9 @@ async function fetchSearchResults(query: string): Promise<SearchResult[]> {
     category: item.category,
     type: (item.type as 'course' | 'lesson' | 'article') || 'course',
     description: item.description,
+    rating: item.rating,
+    duration: typeof item.duration === 'number' ? `${item.duration} Mins` : '30 - 45 Mins',
+    modules: item.slidesCount,
   }));
 }
 
