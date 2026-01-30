@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useState, useMemo } from "react";
 import {
   View,
   Pressable,
@@ -15,11 +15,15 @@ import AppBar from "@/components/ui/AppBar";
 import { StatusBar } from "expo-status-bar";
 import { ThemeText } from "../components/ui/ThemeText";
 import { CloseIcon, NotificationIcon, SearchIcon } from "@/components/ui/Icon";
+import { Skeleton } from "@/components/ui/Skeleton";
+import { CourseListSkeleton } from "@/components/Course/CourseListSkeleton";
 
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useNavigation } from "@react-navigation/native";
 import type { NavigationProp } from "@react-navigation/native";
 import type { RootStackParamList } from "@/@types/navigation";
+import { useHomeCourses } from "@/libs/home";
+import { App } from "@/@types/app";
 
 interface Category {
   name: string;
@@ -53,29 +57,29 @@ export default function HomeScreen() {
   const openCategoriesModal = useCallback(() => setShowCategoriesModal(true), []);
   const closeCategoriesModal = useCallback(() => setShowCategoriesModal(false), []);
 
+  const { data, isPending } = useHomeCourses();
+
+  const sections = data?.data?.sections;
+  const courses = data?.data?.courses || [];
+
+  const courseMap = useMemo(() => {
+    return new Map(courses.map(c => [c.id, c]));
+  }, [courses]);
+
+  const getSectionCourses = useCallback((key: string) => {
+    if (!sections || !sections[key]) return [];
+    return sections[key].items.map(id => courseMap.get(id)).filter(Boolean) as App.Course[];
+  }, [sections, courseMap]);
+
   const goToCourses = useCallback(
     () => navigation.navigate("Tabs", { screen: "Courses" }),
     [navigation]
   );
 
-  const goToRecommended = useCallback(() => {
+  const goToSection = useCallback((key: string, title: string) => {
     navigation.navigate("Course-List-Screen", {
-      listType: "recommended",
-      title: "RECOMMENDED",
-    });
-  }, [navigation]);
-
-  const goToTrending = useCallback(() => {
-    navigation.navigate("Course-List-Screen", {
-      listType: "trending",
-      title: "TRENDING",
-    });
-  }, [navigation]);
-
-  const goToNew = useCallback(() => {
-    navigation.navigate("Course-List-Screen", {
-      listType: "new",
-      title: "NEW COURSES",
+      listType: key as any,
+      title: title,
     });
   }, [navigation]);
 
@@ -189,33 +193,28 @@ export default function HomeScreen() {
         </ImageBackground>
 
         <View className="mt-[74]">
-          <CourseContainer
-            title="RECOMMENDED"
-            description="Pick some courses that you will interest."
-            moreAction={goToRecommended}
-          />
-
-          <View className="mx-screen mb-8">
-            <Image
-              source={require("assets/images/certificate.png")}
-              className="w-full h-[200]"
-              resizeMode="contain"
-            />
-          </View>
-
-          <CourseContainer
-            title="TRENDING COURSES"
-            description="Browse from daily trending courses."
-            moreAction={goToTrending}
-          />
-
-          <EventItem />
-
-          <CourseContainer
-            title="NEW COURSES"
-            description="Explore weekly updated new courses."
-            moreAction={goToNew}
-          />
+          {isPending ? (
+            Array.from({ length: 3 }).map((_, i) => (
+              <View key={`skeleton-${i}`} className="mb-[32]">
+                <View className="px-screen mb-0">
+                  <Skeleton width={140} height={24} className="mb-2" />
+                  <Skeleton width={220} height={16} />
+                </View>
+                <CourseListSkeleton count={2} />
+              </View>
+            ))
+          ) : (
+            sections && Object.entries(sections).map(([key, section]) => (
+              <CourseContainer
+                key={key}
+                title={section.title}
+                description={section.description}
+                moreAction={() => goToSection(key, section.title)}
+                courses={getSectionCourses(key)}
+                isLoading={isPending}
+              />
+            ))
+          )}
         </View>
       </ScrollView>
 
