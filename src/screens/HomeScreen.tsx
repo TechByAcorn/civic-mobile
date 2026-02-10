@@ -4,11 +4,18 @@ import {
   Pressable,
   Image,
   ImageBackground,
-  ScrollView,
   Modal,
   FlatList,
   Dimensions,
 } from "react-native";
+import Animated, {
+  useSharedValue,
+  useAnimatedScrollHandler,
+  useAnimatedStyle,
+  interpolate,
+  Extrapolation,
+  runOnJS,
+} from "react-native-reanimated";
 import CourseContainer from "@/components/Course/Container";
 import EventItem from "@/components/Event/Item";
 import AppBar from "@/components/ui/AppBar";
@@ -17,6 +24,8 @@ import { ThemeText } from "../components/ui/ThemeText";
 import { CloseIcon, NotificationIcon, SearchIcon } from "@/components/ui/Icon";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { CourseListSkeleton } from "@/components/Course/CourseListSkeleton";
+import { ErrorState } from "@/components/ui/ErrorState";
+import { EmptyState } from "@/components/ui/EmptyState";
 
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useNavigation } from "@react-navigation/native";
@@ -57,7 +66,7 @@ export default function HomeScreen() {
   const openCategoriesModal = useCallback(() => setShowCategoriesModal(true), []);
   const closeCategoriesModal = useCallback(() => setShowCategoriesModal(false), []);
 
-  const { data, isPending } = useHomeCourses();
+  const { data, isPending, isError, refetch } = useHomeCourses();
 
   const sections = data?.data?.sections;
   const courses = data?.data?.courses || [];
@@ -83,12 +92,101 @@ export default function HomeScreen() {
     });
   }, [navigation]);
 
+  const scrollY = useSharedValue(0);
+
+  const scrollHandler = useAnimatedScrollHandler({
+    onScroll: (event) => {
+      scrollY.value = event.contentOffset.y;
+      if (event.contentOffset.y > 24 && !scrolled) {
+        runOnJS(setScrolled)(true);
+      } else if (event.contentOffset.y <= 24 && scrolled) {
+        runOnJS(setScrolled)(false);
+      }
+    },
+  });
+
+  const stickyHeaderStyle = useAnimatedStyle(() => {
+    return {
+      opacity: interpolate(scrollY.value, [180, 220], [0, 1], Extrapolation.CLAMP),
+      transform: [
+        {
+          translateY: interpolate(
+            scrollY.value,
+            [180, 220],
+            [-20, 0],
+            Extrapolation.CLAMP
+          ),
+        },
+      ],
+      zIndex: 100,
+    };
+  });
+
   return (
     <View style={{ flex: 1 }} className="bg-surface">
       <StatusBar style={scrolled ? "dark" : "light"} />
-      <ScrollView
+      
+      {/* Sticky Header */}
+      <Animated.View
+        style={[
+          {
+            position: "absolute",
+            top: 0,
+            left: 0,
+            right: 0,
+            backgroundColor: "white",
+            paddingTop: insets.top,
+            paddingBottom: 12,
+            borderBottomWidth: 1,
+            borderBottomColor: "#F0F0F0",
+            elevation: 4,
+            shadowColor: "#000",
+            shadowOffset: { width: 0, height: 2 },
+            shadowOpacity: 0.1,
+            shadowRadius: 4,
+          },
+          stickyHeaderStyle,
+        ]}
+        testID="sticky-header"
+      >
+        <View className="flex-row items-center justify-between px-screen h-[60]">
+          <ThemeText variant="h2" color="onSurface" uppercase>
+            Hi, Jame
+          </ThemeText>
+          <View className="flex-row items-center gap-6">
+            <Pressable accessibilityRole="button" onPress={goToCourses} testID="sticky-header-search-button">
+              <SearchIcon stroke="black" />
+            </Pressable>
+            <Pressable accessibilityRole="button" testID="sticky-header-notification-button">
+              <NotificationIcon stroke="black" />
+            </Pressable>
+          </View>
+        </View>
+        
+        {/* Horizontal Categories Badges */}
+        <Animated.ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={{ paddingHorizontal: 24, gap: 12 }}
+        >
+          {demoCategories.map((category) => (
+            <Pressable
+              key={category.name}
+              className="flex-row items-center bg-gray-100 rounded-full px-3 py-2 gap-2"
+              accessibilityRole="button"
+            >
+              <Image source={category.icon} style={{ width: 20, height: 20 }} />
+              <ThemeText variant="label" color="onSurface">
+                {category.name}
+              </ThemeText>
+            </Pressable>
+          ))}
+        </Animated.ScrollView>
+      </Animated.View>
+
+      <Animated.ScrollView
         className="flex-1"
-        onScroll={(e) => setScrolled(e.nativeEvent.contentOffset.y > 24)}
+        onScroll={scrollHandler}
         scrollEventThrottle={16}
         testID="home-main-scroll"
       >
@@ -97,23 +195,11 @@ export default function HomeScreen() {
           className="w-full h-[220]"
           style={{ paddingTop: insets.top }}
         >
-          <View
-            pointerEvents="none"
-            style={{
-              position: "absolute",
-              top: 0,
-              left: 0,
-              right: 0,
-              height: insets.top + 60,
-              backgroundColor: "#FFFFFF",
-              opacity: scrolled ? 1 : 0,
-            }}
-          />
-          {/* Top Bar */}
+          {/* Original Top Bar (visible initially) */}
           <View className="flex-row items-center justify-between px-screen pt-1 h-[60]">
             <ThemeText
               variant="h2"
-              color={scrolled ? "onSurface" : "text-white"}
+              color="text-white"
               uppercase
             >
               Hi, Jame
@@ -122,7 +208,7 @@ export default function HomeScreen() {
               <Pressable accessibilityRole="button" onPress={goToCourses} testID="home-search-button">
                 <SearchIcon />
               </Pressable>
-              <Pressable accessibilityRole="button">
+              <Pressable accessibilityRole="button" testID="home-notification-button">
                 <NotificationIcon />
               </Pressable>
             </View>
@@ -142,7 +228,7 @@ export default function HomeScreen() {
             }}
           >
             <View className="py-3">
-              <ScrollView
+              <Animated.ScrollView
                 horizontal
                 showsHorizontalScrollIndicator={false}
                 testID="home-categories-scroll"
@@ -172,7 +258,7 @@ export default function HomeScreen() {
                     </View>
                   </Pressable>
                 ))}
-              </ScrollView>
+              </Animated.ScrollView>
               <View className="my-3 w-full h-[0.9] bg-border" />
               <Pressable
                 accessibilityRole="button"
@@ -203,32 +289,40 @@ export default function HomeScreen() {
                 <CourseListSkeleton count={2} />
               </View>
             ))
+          ) : isError ? (
+            <ErrorState onRetry={refetch} />
+          ) : !sections || Object.keys(sections).length === 0 ? (
+            <EmptyState />
           ) : (
-            sections && Object.entries(sections).map(([key, section]) => (
-              <CourseContainer
-                key={key}
-                title={section.title}
-                description={section.description}
-                moreAction={() => goToSection(key, section.title)}
-                courses={getSectionCourses(key)}
-                isLoading={isPending}
-              />
-            ))
+            Object.entries(sections).map(([key, section]) => {
+              const sectionCourses = getSectionCourses(key);
+              if (sectionCourses.length === 0) return null;
+              return (
+                <CourseContainer
+                  key={key}
+                  title={section.title}
+                  description={section.description}
+                  moreAction={() => goToSection(key, section.title)}
+                  courses={sectionCourses}
+                  isLoading={isPending}
+                />
+              );
+            })
           )}
         </View>
-      </ScrollView>
+      </Animated.ScrollView>
 
       {/* Categories Bottom Sheet Modal */}
       <Modal
         visible={showCategoriesModal}
         transparent
         animationType="fade"
+        testID="categories-modal"
         onRequestClose={closeCategoriesModal}
       >
         <View
           style={{ flex: 1, backgroundColor: "#000000AA" }}
           className="justify-end"
-          testID="categories-modal"
         >
           <Pressable
             style={{ flex: 1 }}

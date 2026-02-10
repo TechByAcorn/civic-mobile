@@ -3,18 +3,18 @@ import { render, fireEvent } from '@testing-library/react-native';
 import ForgotPasswordScreen from '../ForgotPassword';
 
 // Override navigation mock to capture navigate calls
-const navigateMock = jest.fn();
+const mockNavigate = jest.fn();
 jest.mock('@react-navigation/native', () => {
   const actual = jest.requireActual('@react-navigation/native');
   return {
     ...actual,
-    useNavigation: () => ({ navigate: navigateMock, goBack: jest.fn() }),
+    useNavigation: () => ({ navigate: mockNavigate, goBack: jest.fn() }),
   };
 });
 
 describe('ForgotPasswordScreen', () => {
   beforeEach(() => {
-    navigateMock.mockClear();
+    mockNavigate.mockClear();
   });
 
   it('disables submit for invalid email; enables for valid email and navigates with email param', () => {
@@ -24,20 +24,20 @@ describe('ForgotPasswordScreen', () => {
     const submitButton = getByTestId('send-reset-button');
 
     // Initially disabled
-    expect(submitButton.props.disabled).toBe(true);
+    expect(submitButton.props.accessibilityState?.disabled ?? submitButton.props.disabled).toBe(true);
 
     // Enter invalid email
     fireEvent.changeText(emailInput, 'invalid');
-    expect(submitButton.props.disabled).toBe(true);
+    expect(submitButton.props.accessibilityState?.disabled ?? submitButton.props.disabled).toBe(true);
 
     // Enter valid email
     fireEvent.changeText(emailInput, 'user@example.com');
-    expect(submitButton.props.disabled).toBe(false);
+    expect(submitButton.props.accessibilityState?.disabled ?? submitButton.props.disabled).toBe(false);
 
     // Press submit → should navigate to VerifyOtp with email
     fireEvent.press(submitButton);
-    expect(navigateMock).toHaveBeenCalledTimes(1);
-    expect(navigateMock).toHaveBeenCalledWith('VerifyOtp', { email: 'user@example.com' });
+    expect(mockNavigate).toHaveBeenCalledTimes(1);
+    expect(mockNavigate).toHaveBeenCalledWith('VerifyOtp', { email: 'user@example.com' });
   });
 
   it('toggles to phone mode; enables for valid phone and navigates with email undefined', () => {
@@ -52,15 +52,15 @@ describe('ForgotPasswordScreen', () => {
 
     // Invalid phone keeps button disabled
     fireEvent.changeText(phoneInput, '123');
-    expect(submitButton.props.disabled).toBe(true);
+    expect(submitButton.props.accessibilityState?.disabled ?? submitButton.props.disabled).toBe(true);
 
     // Valid phone (>= 6 digits) enables submit
     fireEvent.changeText(phoneInput, '123456');
-    expect(submitButton.props.disabled).toBe(false);
+    expect(submitButton.props.accessibilityState?.disabled ?? submitButton.props.disabled).toBe(false);
 
     // Press submit → should navigate to VerifyOtp with email: undefined
     fireEvent.press(submitButton);
-    expect(navigateMock).toHaveBeenCalledTimes(1);
-    expect(navigateMock).toHaveBeenCalledWith('VerifyOtp', { email: undefined });
+    expect(mockNavigate).toHaveBeenCalledTimes(1);
+    expect(mockNavigate).toHaveBeenCalledWith('VerifyOtp', { email: undefined });
   });
 });

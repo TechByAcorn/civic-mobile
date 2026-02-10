@@ -73,7 +73,7 @@ const CourseContainer: React.FC<Props> = ({
           <ThemeText variant="h4" weight="bold">{title}</ThemeText>
           {description && <ThemeText variant="caption" color="text-secondary">{description}</ThemeText>}
         </View>
-        <Pressable accessibilityRole="button" onPress={moreAction}>
+        <Pressable accessibilityRole="button" onPress={moreAction} testID="section-more-button">
           <ThemeText variant="label" weight="bold" color="primary">More</ThemeText>
         </Pressable>
       </View>
