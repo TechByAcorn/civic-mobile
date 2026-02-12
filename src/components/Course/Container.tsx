@@ -3,39 +3,31 @@ import { ThemeText } from "../ui/ThemeText";
 import { Dimensions, FlatList, Image, ListRenderItemInfo, Pressable, View } from "react-native";
 import { DurationIcon, RatingIcon, SlideShowIcon } from "../ui/Icon";
 import { useNavigation } from "@react-navigation/native";
-import { useCourses } from '@/services/courses';
-import type { ListType } from '@/services/courses';
+import { App } from "@/@types/app";
 import { CourseListSkeleton } from './CourseListSkeleton';
 
 const DEVICE_WIDTH = Dimensions.get("window").width;
 const CARD_WIDTH = DEVICE_WIDTH / 1.7;
 
-interface Course {
-  id: string;
-  title: string;
-  category: string;
-  duration: string; // e.g., "12 min"
-  progress?: number; // 0..1
-  modules?: number;
-  rating?: number;
-}
-
 type Props = {
   title: string;
-  description: string;
+  description?: string;
   moreAction: () => void;
-  listType?: ListType;
+  courses?: App.Course[];
+  isLoading?: boolean;
+  error?: any;
 }
 const CourseContainer: React.FC<Props> = ({
   title,
   description,
   moreAction,
-  listType,
+  courses = [],
+  isLoading = false,
+  error = null,
 }) => {
   const navigation = useNavigation();
-  const { data: courses = [], isLoading, error } = useCourses(listType ?? 'recommended');
 
-  const renderItem = useCallback(({ item }: ListRenderItemInfo<Course>) => (
+  const renderItem = useCallback(({ item }: ListRenderItemInfo<App.Course>) => (
     <Pressable
       style={{ width: CARD_WIDTH }}
       className="rounded-[8] bg-white border border-border"
@@ -55,33 +47,33 @@ const CourseContainer: React.FC<Props> = ({
         <ThemeText variant="caption" weight="medium" color="text-secondary">{item?.rating ? item.rating.toFixed(1) : '—'}</ThemeText>
       </View>
       <View className="gap-1 p-item">
-        <ThemeText variant="label" weight="bold">{item?.title}</ThemeText>
-        <ThemeText variant="caption" color="text-secondary" numberOfLines={2}>Learn the basics of financial modelling, including cash flow forecas</ThemeText>
+        <ThemeText variant="label" weight="bold" numberOfLines={2}>{item?.title}</ThemeText>
+        <ThemeText variant="caption" color="text-secondary" numberOfLines={1}>{item.description}</ThemeText>
 
         <View className="mt-[16]">
           <View className="flex-row items-center gap-[8] mb-[8]">
             <DurationIcon />
-            <ThemeText variant="caption" color="text-secondary">{item?.duration ?? '—'}</ThemeText>
+            <ThemeText variant="caption" color="text-secondary">{typeof item?.duration === 'number' ? `${item.duration} min` : item.duration ?? '—'}</ThemeText>
           </View>
            <View className="flex-row items-center gap-[8]">
             <SlideShowIcon />
-            <ThemeText variant="caption" color="text-secondary">{typeof item?.modules === 'number' ? `${item.modules} Modules` : 'Modules N/A'}</ThemeText>
+            <ThemeText variant="caption" color="text-secondary">{item?.modulesCount ? `${item.modulesCount} Modules` : 'Modules N/A'}</ThemeText>
           </View>
         </View>
       </View>
     </Pressable>
   ), []);
 
-  const keyExtractor = useCallback((item: Course) => item.id, []);
+  const keyExtractor = useCallback((item: App.Course) => item.id, []);
 
   return (
     <View className="mb-[32]">
       <View className="flex-row items-start justify-between px-[20]">
         <View className="gap-[4]">
           <ThemeText variant="h4" weight="bold">{title}</ThemeText>
-          <ThemeText variant="caption" color="text-secondary">{description}</ThemeText>
+          {description && <ThemeText variant="caption" color="text-secondary">{description}</ThemeText>}
         </View>
-        <Pressable accessibilityRole="button" onPress={moreAction}>
+        <Pressable accessibilityRole="button" onPress={moreAction} testID="section-more-button">
           <ThemeText variant="label" weight="bold" color="primary">More</ThemeText>
         </Pressable>
       </View>
@@ -108,12 +100,5 @@ const CourseContainer: React.FC<Props> = ({
     </View>
   )
 }
-
-const featuredCourses = [
-  { id: 'f-101', title: 'Financial Literacy Basics', category: 'Finance', duration: '12 min' },
-  { id: 'f-102', title: 'Leadership Essentials', category: 'Leadership', duration: '9 min' },
-  { id: 'f-103', title: 'Community Engagement 101', category: 'Civics', duration: '15 min' },
-];
-
 
 export default CourseContainer;
